@@ -1,0 +1,165 @@
+@import 'tailwindcss';
+
+/* ===========================================================================
+   SafeCircle design tokens
+
+   The palette is deliberately calm. A safety product that looks like an alarm
+   panel makes people anxious before anything has happened, so red is reserved
+   exclusively for the emergency control and active emergency state — it never
+   appears in ordinary navigation, headings or borders.
+   ======================================================================== */
+
+@theme {
+  /* Primary: a deep, steady teal. Reads as reassurance rather than urgency. */
+  --color-brand-50: #eefaf8;
+  --color-brand-100: #d3f2ee;
+  --color-brand-200: #a9e5de;
+  --color-brand-300: #74d1c8;
+  --color-brand-400: #43b6ae;
+  --color-brand-500: #2a9a94;
+  --color-brand-600: #1f7b78;
+  --color-brand-700: #1d6261;
+  --color-brand-800: #1c4e4e;
+  --color-brand-900: #1a4141;
+
+  /* Ink: warm neutrals, softer than pure grey. */
+  --color-ink-50: #f7f7f6;
+  --color-ink-100: #eeedeb;
+  --color-ink-200: #dcdad6;
+  --color-ink-300: #c0bdb6;
+  --color-ink-400: #9c978e;
+  --color-ink-500: #7f7a70;
+  --color-ink-600: #666159;
+  --color-ink-700: #524e48;
+  --color-ink-800: #3d3a36;
+  --color-ink-900: #24221f;
+
+  /* Status */
+  --color-safe-500: #2f9e5f;
+  --color-safe-50: #eaf7ef;
+  --color-caution-500: #c67c14;
+  --color-caution-50: #fdf3e3;
+  --color-alert-600: #c2352b;
+  --color-alert-700: #a12a22;
+  --color-alert-50: #fdeceb;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --radius-card: 1rem;
+
+  /* 44px is the minimum comfortable touch target; several controls here are
+     used one-handed, in motion, sometimes in the dark. */
+  --spacing-touch: 2.75rem;
+}
+
+:root {
+  --surface: #ffffff;
+  --surface-muted: var(--color-ink-50);
+  --surface-raised: #ffffff;
+  --text-primary: var(--color-ink-900);
+  --text-secondary: var(--color-ink-600);
+  --border-subtle: var(--color-ink-200);
+
+  /* Safe-area insets for notched phones. */
+  --nav-height: 4.25rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --surface: #171917;
+    --surface-muted: #1f221f;
+    --surface-raised: #232723;
+    --text-primary: #f2f1ee;
+    --text-secondary: #b3afa6;
+    --border-subtle: #343834;
+  }
+}
+
+:root[data-theme='dark'] {
+  --surface: #171917;
+  --surface-muted: #1f221f;
+  --surface-raised: #232723;
+  --text-primary: #f2f1ee;
+  --text-secondary: #b3afa6;
+  --border-subtle: #343834;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  /* Stops iOS zooming the page when a form field is focused. */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--surface-muted);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  /* Mobile-first: the layout must not scroll sideways at 320px. */
+  overflow-x: hidden;
+  min-height: 100dvh;
+}
+
+/* Visible focus for keyboard users, suppressed for pointer users. */
+:focus-visible {
+  outline: 3px solid var(--color-brand-500);
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@utility surface {
+  background-color: var(--surface-raised);
+}
+
+@utility surface-muted {
+  background-color: var(--surface-muted);
+}
+
+@utility text-secondary {
+  color: var(--text-secondary);
+}
+
+@utility border-subtle {
+  border-color: var(--border-subtle);
+}
+
+/* Screen-reader-only text. */
+@utility sr-only-focusable {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Gentle pulse used only by the active-emergency banner. */
+@keyframes safecircle-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.72;
+  }
+}
+
+.animate-emergency-pulse {
+  animation: safecircle-pulse 2s ease-in-out infinite;
+}
