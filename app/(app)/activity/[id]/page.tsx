@@ -53,7 +53,6 @@ export default async function ActivityPage({ params }: { params: Promise<{ id: s
         activity={activity}
         initialCheckIn={checkIn}
         shares={shares.filter((share) => share.activity_id === activity.id)}
-        shareLinks={[]}
       />
     </div>
   );

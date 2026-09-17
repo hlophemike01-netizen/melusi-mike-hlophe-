@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { Input, Select } from '@/components/ui/Input';
 import { InlineNotice } from '@/components/ui/States';
+import { ShareLinkHandoff } from '@/features/activities/ShareLinkHandoff';
 import { cn } from '@/lib/cn';
 import {
   ACTIVITY_DURATION_PRESETS,
@@ -26,6 +27,7 @@ import type {
   ActivityVisibility,
   EmergencyContactRow,
   GroupRow,
+  OpenedShareRow,
   ProfileRow,
 } from '@/types/database';
 
@@ -71,6 +73,15 @@ export function StartActivityForm({
   const [alsoCount, setAlsoCount] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // The raw share tokens exist only in the response that creates them — the
+  // database keeps only their hash. Navigating straight to the activity would
+  // destroy them, so they are held here until the user confirms they have been
+  // sent.
+  const [pendingLinks, setPendingLinks] = useState<{
+    activityId: string;
+    links: OpenedShareRow[];
+  } | null>(null);
+
   const selectedVisibility = useMemo(
     () => VISIBILITY_OPTIONS.find((option) => option.value === visibility),
     [visibility],
@@ -111,10 +122,29 @@ export function StartActivityForm({
     }
 
     const result = await startActivity(db, parsed.data);
+
+    const oneTimeLinks = result.shareLinks.filter((share) => share.share_token);
+    if (oneTimeLinks.length > 0) {
+      setPendingLinks({ activityId: result.activity.id, links: oneTimeLinks });
+      return result;
+    }
+
     router.push(`/activity/${result.activity.id}`);
     router.refresh();
     return result;
   });
+
+  if (pendingLinks) {
+    return (
+      <ShareLinkHandoff
+        shareLinks={pendingLinks.links}
+        onContinue={() => {
+          router.push(`/activity/${pendingLinks.activityId}`);
+          router.refresh();
+        }}
+      />
+    );
+  }
 
   return (
     <div className="space-y-4">

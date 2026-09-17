@@ -1,7 +1,15 @@
 import type { NextRequest } from 'next/server';
 import { updateSession } from '@/lib/supabase/middleware';
 
-export async function middleware(request: NextRequest) {
+/**
+ * Next.js 16 renamed the `middleware` file convention to `proxy`. This runs on
+ * every matched request to refresh the Supabase session and redirect
+ * unauthenticated visitors.
+ *
+ * It is not an authorisation boundary — Row Level Security is. This exists so a
+ * signed-out visitor gets a clean redirect instead of an empty page.
+ */
+export default async function proxy(request: NextRequest) {
   return updateSession(request);
 }
 

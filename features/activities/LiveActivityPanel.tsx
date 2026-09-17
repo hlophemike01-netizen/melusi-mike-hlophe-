@@ -14,7 +14,7 @@ import { useCountdown } from '@/hooks/useCountdown';
 import { useLocationBroadcast } from '@/hooks/useLocationBroadcast';
 import { useSupabase } from '@/hooks/useSupabase';
 import { endActivity } from '@/services/activity.service';
-import { revokeShare } from '@/services/contacts.service';
+import { reissueActivityShares, revokeShare } from '@/services/contacts.service';
 import { buildShareUrl } from '@/services/share.service';
 import type { ActivityRow, CheckInRow, OpenedShareRow, TrustedLocationShareRow } from '@/types/database';
 
@@ -29,18 +29,17 @@ export function LiveActivityPanel({
   activity,
   initialCheckIn,
   shares,
-  shareLinks,
 }: {
   activity: ActivityRow;
   initialCheckIn: CheckInRow | null;
   shares: TrustedLocationShareRow[];
-  shareLinks: OpenedShareRow[];
 }) {
   const db = useSupabase();
   const router = useRouter();
   const [checkIn, setCheckIn] = useState<CheckInRow | null>(initialCheckIn);
   const [confirmEnd, setConfirmEnd] = useState(false);
   const [activeShares, setActiveShares] = useState(shares);
+  const [reissuedLinks, setReissuedLinks] = useState<OpenedShareRow[]>([]);
 
   const live =
     activity.status === 'active' || activity.status === 'overdue' || activity.status === 'emergency';
@@ -66,6 +65,13 @@ export function LiveActivityPanel({
     await revokeShare(db, shareId);
     setActiveShares((current) => current.filter((share) => share.id !== shareId));
     return null;
+  });
+
+  const reissue = useAsyncAction(async () => {
+    const links = await reissueActivityShares(db, activity.id);
+    setReissuedLinks(links.filter((share) => share.share_token));
+    router.refresh();
+    return links;
   });
 
   return (
@@ -172,25 +178,44 @@ export function LiveActivityPanel({
         </Card>
       ) : null}
 
-      {shareLinks.length > 0 ? (
+      {live && activity.visibility === 'trusted_contacts' ? (
         <Card>
           <CardHeader
-            title="Send these links"
-            description="These contacts do not have a SafeCircle account. Each link is shown once."
+            title="Lost a link?"
+            description="Link tokens are shown once and cannot be recovered."
           />
-          <p className="mb-3 text-sm text-secondary">
-            SafeCircle does not send messages on your behalf. Copy each link and send it yourself.
+          <p className="text-sm text-secondary">
+            If you did not manage to send a link, you can create a new one. The old link keeps
+            working until you revoke it above.
           </p>
-          <ul className="space-y-3">
-            {shareLinks.map((share) => (
-              <li key={share.share_id}>
-                <p className="text-sm font-medium">{share.contact_name}</p>
-                <code className="mt-1 block overflow-x-auto rounded-lg bg-[var(--surface-muted)] p-2 text-xs">
-                  {buildShareUrl(publicEnv.siteUrl, share.share_token ?? '')}
-                </code>
-              </li>
-            ))}
-          </ul>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="mt-3"
+            loading={reissue.pending}
+            onClick={() => void reissue.run()}
+          >
+            Create new links
+          </Button>
+
+          {reissuedLinks.length > 0 ? (
+            <ul className="mt-4 space-y-3 border-t border-subtle pt-3">
+              {reissuedLinks.map((share) => (
+                <li key={share.share_id}>
+                  <p className="text-sm font-medium">{share.contact_name}</p>
+                  <code className="mt-1 block overflow-x-auto rounded-lg bg-[var(--surface-muted)] p-2 text-xs">
+                    {buildShareUrl(publicEnv.siteUrl, share.share_token ?? '')}
+                  </code>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          {reissue.error ? (
+            <p role="alert" className="mt-2 text-sm font-medium text-alert-600">
+              {reissue.error}
+            </p>
+          ) : null}
         </Card>
       ) : null}
 

@@ -163,10 +163,12 @@ export function AuthForm({ mode }: { mode: Mode }) {
       </form>
 
       {mode === 'sign-up' ? (
-        <InlineNotice tone="info">
-          <span className="block">{SAFETY_COPY.locationOptional}</span>
-          <span className="mt-1 block">{SAFETY_COPY.onlyAuthorised}</span>
-        </InlineNotice>
+        <div className="mt-4">
+          <InlineNotice tone="info">
+            <span className="block">{SAFETY_COPY.locationOptional}</span>
+            <span className="mt-1 block">{SAFETY_COPY.onlyAuthorised}</span>
+          </InlineNotice>
+        </div>
       ) : null}
 
       <div className="mt-5 space-y-2 border-t border-subtle pt-4 text-sm">

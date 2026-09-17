@@ -192,9 +192,11 @@ export function PrivacySettings({
             authorize, and only until it expires or you revoke it.
           </li>
           <li>
-            <strong>The community map:</strong> at most, that someone is active in a{' '}
-            {gridSizeMetres(profile.approximate_area ? -33 : 0, COMMUNITY_GRID_DEGREES)}m grid square
-            — and only where at least {K_ANONYMITY_THRESHOLD} people are active.
+            {/* Quoted at the equator, where a grid cell is widest — the honest
+                worst case rather than a flattering local figure. */}
+            <strong>The community map:</strong> at most, that someone is active in a grid square of
+            roughly {gridSizeMetres(0, COMMUNITY_GRID_DEGREES)}m — and only where at least{' '}
+            {K_ANONYMITY_THRESHOLD} people are active.
           </li>
           <li>
             <strong>SafeCircle administrators:</strong> your display name and account status.

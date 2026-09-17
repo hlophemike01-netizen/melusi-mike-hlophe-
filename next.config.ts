@@ -49,6 +49,9 @@ const csp = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Next would otherwise write AGENTS.md/CLAUDE.md into the repo root on every
+  // dev run. This project documents itself under docs/.
+  agentRules: false,
   async headers() {
     return [
       {

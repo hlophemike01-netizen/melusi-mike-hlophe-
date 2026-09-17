@@ -1,7 +1,11 @@
 import { AppError, handleServiceError } from '@/lib/errors';
 import type { TrustedContactInput } from '@/lib/validation';
 import type { Db } from '@/services/types';
-import type { EmergencyContactRow, TrustedLocationShareRow } from '@/types/database';
+import type {
+  EmergencyContactRow,
+  OpenedShareRow,
+  TrustedLocationShareRow,
+} from '@/types/database';
 
 /**
  * Trusted contacts.
@@ -131,4 +135,29 @@ export async function revokeAllShares(db: Db): Promise<number> {
 
   if (error) throw handleServiceError('revokeAllShares', error);
   return (data ?? []).length;
+}
+
+/**
+ * Mints fresh share grants for an activity that is already running.
+ *
+ * Needed because a link token is shown exactly once — if the owner loses it
+ * before sending, there is no way to recover it from the database (only the
+ * hash is stored). Re-issuing is safe: the owner is authorising it, the new
+ * grant expires with the activity, and the old one can be revoked separately.
+ */
+export async function reissueActivityShares(
+  db: Db,
+  activityId: string,
+  contactIds?: string[],
+  durationMinutes = 120,
+): Promise<OpenedShareRow[]> {
+  const { data, error } = await db.rpc('open_trusted_shares', {
+    p_activity_id: activityId,
+    p_reason: 'activity',
+    p_contact_ids: contactIds && contactIds.length > 0 ? contactIds : null,
+    p_duration_minutes: durationMinutes,
+  });
+
+  if (error) throw handleServiceError('reissueActivityShares', error);
+  return (data ?? []) as OpenedShareRow[];
 }
