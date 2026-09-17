@@ -26,17 +26,34 @@ else
   PGSOCK="${PGSOCK:-${TMPDIR:-/tmp}/safecircle-pgsock}"
   PGPORT="${PGPORT:-55432}"
 
+  # PostgreSQL refuses to run as root, so when this script is invoked as root
+  # (containers, some CI images) the server is run as the `postgres` system
+  # user instead. `as_pg` wraps every server command accordingly.
+  if [[ "$(id -u)" -eq 0 ]]; then
+    if ! id postgres >/dev/null 2>&1; then
+      echo "This script must not run as root without a 'postgres' system user." >&2
+      exit 1
+    fi
+    as_pg() { su postgres -s /bin/bash -c "PATH=$PGBIN:\$PATH $*"; }
+    OWNER=postgres
+  else
+    as_pg() { PATH="$PGBIN:$PATH" bash -c "$*"; }
+    OWNER="$(id -un)"
+  fi
+
   if [[ ! -d "$PGDATA" ]]; then
     echo "==> initdb $PGDATA"
     mkdir -p "$PGDATA" "$PGSOCK"
-    "$PGBIN/initdb" -D "$PGDATA" -A trust -U postgres >/dev/null
+    chown -R "$OWNER" "$PGDATA" "$PGSOCK" 2>/dev/null || true
+    as_pg "initdb -D '$PGDATA' -A trust -U postgres" >/dev/null
   fi
+
+  mkdir -p "$PGSOCK"
+  chown -R "$OWNER" "$PGSOCK" 2>/dev/null || true
 
   if ! "$PGBIN/pg_isready" -h "$PGSOCK" -p "$PGPORT" >/dev/null 2>&1; then
     echo "==> starting postgres on $PGSOCK:$PGPORT"
-    "$PGBIN/pg_ctl" -D "$PGDATA" \
-      -o "-k $PGSOCK -p $PGPORT -c listen_addresses=" \
-      -l "$PGDATA/server.log" start -w >/dev/null
+    as_pg "pg_ctl -D '$PGDATA' -o '-k $PGSOCK -p $PGPORT -c listen_addresses=' -l '$PGDATA/server.log' start -w" >/dev/null
   fi
 
   PSQL=("$PSQL_BIN" -h "$PGSOCK" -p "$PGPORT" -U postgres)
