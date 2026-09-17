@@ -6,6 +6,12 @@ This is the heart of the product. If you read one document, read this one.
 
 ## Two kinds of location, kept apart
 
+![A browser GPS reading enters one write guard, which forks into two stores:
+activity_locations holds precise expiring points readable only by authorised
+people, and activities.approx_location holds a grid-snapped point feeding
+aggregate map counts. No path connects the precise store to the
+map.](./diagrams/location-stores.svg)
+
 Mwhite SafeCircle stores location in exactly two places, and they never mix:
 
 | | `activity_locations.location` | `activities.approx_location` |
@@ -137,6 +143,11 @@ zero rather than as "1". Additional protections on the map feed:
 ---
 
 ## Authorisation, in one place
+
+![A decision chain. The owner is allowed immediately; a suspended account, a
+block in either direction and a finished activity each deny; visibility then
+decides. No branch reaches allow for an
+administrator.](./diagrams/authorisation-gate.svg)
 
 `can_view_activity_location(activity_id, viewer)` is the single predicate. Every
 read path goes through it — the RLS policy, `latest_activity_location`, and

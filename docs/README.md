@@ -39,6 +39,7 @@ authorisation, the UI and this documentation:
 | [PRIVACY.md](./PRIVACY.md) | Data inventory, retention, user controls, what staff can see |
 | [LOCATION_MODEL.md](./LOCATION_MODEL.md) | The location lifecycle, coarsening, k-anonymity, browser limits |
 | [DEPLOYMENT.md](./DEPLOYMENT.md) | Supabase + Vercel setup, environment variables, scheduled jobs |
+| [diagrams/](./diagrams) | The three diagrams the docs above embed, as standalone SVGs |
 
 ---
 

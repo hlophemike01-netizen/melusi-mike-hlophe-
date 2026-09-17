@@ -2,6 +2,10 @@
 
 ## The layering rule
 
+![Four stacked layers. The UI, the service layer and PostgREST sit above a dashed
+security boundary; PostgreSQL with Row Level Security sits below it. Deleting the
+three upper layers still leaves user data protected.](./diagrams/enforcement.svg)
+
 ```
   UI (app/, components/, features/)
         │  props, hooks — never a query

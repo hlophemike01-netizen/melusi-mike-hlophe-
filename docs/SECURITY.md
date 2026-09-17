@@ -63,6 +63,9 @@ surface whatsoever.
 
 ### `activity_locations` — the strictest policy
 
+The decision chain behind this policy is drawn in
+[the authorisation gate diagram](./diagrams/authorisation-gate.svg).
+
 ```sql
 create policy activity_locations_select_authorised on public.activity_locations
   for select to authenticated
