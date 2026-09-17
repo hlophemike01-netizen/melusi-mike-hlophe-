@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 700" width="1180" height="700" role="img" aria-labelledby="t d" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <title id="t">Where each rule is enforced in Mwhite SafeCircle</title>
+  <desc id="d">Four stacked layers. The UI, the service layer and PostgREST sit above a dashed security boundary; PostgreSQL with Row Level Security sits below it. Deleting the three upper layers still leaves user data protected.</desc>
+
+  <rect width="1180" height="700" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#24221f"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="48" font-size="24" font-weight="700" fill="#24221f">Where each rule is actually enforced</text>
+  <text x="40" y="76" font-size="14" fill="#666159">Middleware, session checks and UI role checks exist for clean redirects and useful errors. None of them keeps data safe.</text>
+
+  <g transform="translate(40, 96)">
+    <g fill="none" stroke="#24221f" stroke-width="1.5">
+      <rect x="300" y="18" width="520" height="84" rx="10"/>
+      <rect x="300" y="140" width="520" height="84" rx="10"/>
+      <rect x="300" y="262" width="520" height="84" rx="10"/>
+    </g>
+
+    <text x="560" y="50" text-anchor="middle" font-size="16" font-weight="700" fill="#24221f">app/ · components/ · features/</text>
+    <text x="560" y="76" text-anchor="middle" font-size="13" fill="#666159">React. Reads props. Never builds a query.</text>
+
+    <text x="560" y="172" text-anchor="middle" font-size="16" font-weight="700" fill="#24221f">services/*.service.ts</text>
+    <text x="560" y="198" text-anchor="middle" font-size="13" fill="#666159">Every database call. Takes the caller's own client.</text>
+
+    <text x="560" y="294" text-anchor="middle" font-size="16" font-weight="700" fill="#24221f">Supabase PostgREST</text>
+    <text x="560" y="320" text-anchor="middle" font-size="13" fill="#666159">anon key + the signed-in user's JWT</text>
+
+    <g stroke="#24221f" stroke-width="1.6" marker-end="url(#arrow)">
+      <line x1="560" y1="104" x2="560" y2="134"/>
+      <line x1="560" y1="226" x2="560" y2="256"/>
+      <line x1="560" y1="348" x2="560" y2="408"/>
+    </g>
+
+    <line x1="0" y1="382" x2="1100" y2="382" stroke="#1f7b78" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="0" y="372" font-size="13" font-weight="700" fill="#1f7b78">THE SECURITY BOUNDARY</text>
+
+    <rect x="300" y="414" width="520" height="118" rx="10" fill="#eefaf8" stroke="#1f7b78" stroke-width="2.5"/>
+    <text x="560" y="452" text-anchor="middle" font-size="17" font-weight="700" fill="#1c4e4e">PostgreSQL · Row Level Security</text>
+    <text x="560" y="478" text-anchor="middle" font-size="13" fill="#1c4e4e">~30 policies · consent triggers · CHECK constraints</text>
+    <text x="560" y="502" text-anchor="middle" font-size="13" fill="#1c4e4e">can_view_activity_location() decides every precise read</text>
+
+    <path d="M282 18 L268 18 L268 346 L282 346" fill="none" stroke="#24221f" stroke-width="1.4"/>
+    <text x="248" y="150" text-anchor="end" font-size="14" font-weight="700" fill="#24221f">Convenience</text>
+    <text x="248" y="174" text-anchor="end" font-size="12.5" fill="#666159">Clean redirects, friendly errors,</text>
+    <text x="248" y="192" text-anchor="end" font-size="12.5" fill="#666159">a UI that hides what you cannot use.</text>
+    <text x="248" y="220" text-anchor="end" font-size="12.5" font-style="italic" fill="#666159">Delete all three and the data is</text>
+    <text x="248" y="238" text-anchor="end" font-size="12.5" font-style="italic" fill="#666159">still safe.</text>
+
+    <path d="M838 414 L852 414 L852 532 L838 532" fill="none" stroke="#1f7b78" stroke-width="1.4"/>
+    <text x="872" y="452" font-size="14" font-weight="700" fill="#1f7b78">The boundary</text>
+    <text x="872" y="476" font-size="12.5" fill="#666159">A request without a valid session,</text>
+    <text x="872" y="494" font-size="12.5" fill="#666159">or for someone else's row, is</text>
+    <text x="872" y="512" font-size="12.5" fill="#666159">refused here — not upstream.</text>
+
+    <text x="0" y="566" font-size="12.5" fill="#666159">Server rendering grants no extra privilege: the same policies apply whether a query starts in the browser or on the server.</text>
+  </g>
+</svg>

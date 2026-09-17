@@ -1,0 +1,26 @@
+{
+  // Tailwind v4 keeps its config in CSS, not a JS file, so IntelliSense has to
+  // be pointed at the stylesheet that holds the @theme block.
+  "tailwindCSS.experimental.configFile": "styles/globals.css",
+  "tailwindCSS.classAttributes": ["class", "className", "containerClass"],
+
+  // CI runs `eslint . --max-warnings=0`, so fixing on save keeps you green.
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.useFlatConfig": true,
+
+  // Use the TypeScript version pinned in package.json, not VS Code's bundled one.
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  "search.exclude": {
+    "**/.next": true,
+    "**/node_modules": true,
+    "**/coverage": true,
+    "package-lock.json": true
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
+}
