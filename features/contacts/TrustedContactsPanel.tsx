@@ -94,7 +94,7 @@ export function TrustedContactsPanel({ contacts }: { contacts: EmergencyContactR
       </InlineNotice>
 
       {notice ? (
-        <p role="status" className="px-1 text-sm font-medium text-safe-500">
+        <p role="status" className="px-1 text-sm font-medium text-safe-600">
           {notice}
         </p>
       ) : null}

@@ -81,7 +81,7 @@ export function ProfileForm({ profile }: { profile: ProfileRow }) {
           </p>
         ) : null}
         {saved ? (
-          <p role="status" className="text-sm font-medium text-safe-500">
+          <p role="status" className="text-sm font-medium text-safe-600">
             Saved.
           </p>
         ) : null}

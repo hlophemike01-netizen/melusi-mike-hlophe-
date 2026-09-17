@@ -203,7 +203,7 @@ export function StartActivityForm({
                       Shares precise location
                     </span>
                   ) : (
-                    <span className="rounded-full bg-safe-50 px-2 py-0.5 text-[11px] font-semibold text-safe-500 dark:bg-safe-500/15">
+                    <span className="rounded-full bg-safe-50 px-2 py-0.5 text-[11px] font-semibold text-safe-600 dark:bg-safe-500/15">
                       No location shared
                     </span>
                   )}

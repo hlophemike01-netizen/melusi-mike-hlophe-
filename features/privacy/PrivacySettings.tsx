@@ -117,7 +117,7 @@ export function PrivacySettings({
           </p>
         ) : null}
         {saved ? (
-          <p role="status" className="mt-3 text-sm font-medium text-safe-500">
+          <p role="status" className="mt-3 text-sm font-medium text-safe-600">
             Saved.
           </p>
         ) : null}
@@ -141,7 +141,7 @@ export function PrivacySettings({
           can share with them again later.
         </p>
         {revoked !== null ? (
-          <p role="status" className="mt-2 text-sm font-medium text-safe-500">
+          <p role="status" className="mt-2 text-sm font-medium text-safe-600">
             Revoked {revoked} share{revoked === 1 ? '' : 's'}.
           </p>
         ) : null}
@@ -163,7 +163,7 @@ export function PrivacySettings({
           purged automatically. This removes anything still stored right now.
         </p>
         {erased !== null ? (
-          <p role="status" className="mt-2 text-sm font-medium text-safe-500">
+          <p role="status" className="mt-2 text-sm font-medium text-safe-600">
             Deleted {erased} location point{erased === 1 ? '' : 's'}.
           </p>
         ) : null}

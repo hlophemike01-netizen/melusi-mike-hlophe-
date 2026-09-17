@@ -10,7 +10,7 @@ const VISIBILITY_BADGE: Record<ActivityVisibility, { label: string; className: s
   group: { label: 'Group', className: 'bg-brand-100 text-brand-800 dark:bg-brand-800 dark:text-brand-50' },
   trusted_contacts: {
     label: 'Trusted contacts',
-    className: 'bg-safe-50 text-safe-500 dark:bg-safe-500/15 dark:text-safe-500',
+    className: 'bg-safe-50 text-safe-600 dark:bg-safe-500/15 dark:text-safe-500',
   },
 };
 

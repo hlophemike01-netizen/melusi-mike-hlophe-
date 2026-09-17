@@ -18,7 +18,7 @@ const VARIANTS: Record<Variant, string> = {
   ghost: 'bg-transparent text-brand-700 hover:bg-brand-50 dark:text-brand-300 dark:hover:bg-brand-900/30',
   // Reserved for the emergency control and destructive confirmations.
   danger: 'bg-alert-600 text-white hover:bg-alert-700 active:bg-alert-700 disabled:bg-ink-300',
-  safe: 'bg-safe-500 text-white hover:brightness-95 active:brightness-90 disabled:bg-ink-300',
+  safe: 'bg-safe-600 text-white hover:brightness-95 active:brightness-90 disabled:bg-ink-300',
 };
 
 const SIZES: Record<Size, string> = {

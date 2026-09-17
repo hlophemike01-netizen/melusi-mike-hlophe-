@@ -35,7 +35,12 @@
   --color-ink-900: #24221f;
 
   /* Status */
+  /* safe-500 is a FILL only: white text on it measures 3.4:1, which fails
+     WCAG AA. Anything carrying text — the "I'M SAFE" button, status messages,
+     the visibility badges — uses safe-600, which clears AA both under white
+     text (5.3:1) and as text on the safe-50 tint (4.8:1). */
   --color-safe-500: #2f9e5f;
+  --color-safe-600: #237a48;
   --color-safe-50: #eaf7ef;
   --color-caution-500: #c67c14;
   --color-caution-50: #fdf3e3;
