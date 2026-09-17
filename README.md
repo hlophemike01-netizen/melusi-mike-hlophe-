@@ -40,6 +40,7 @@ authorisation, the UI and this documentation:
 | [LOCATION_MODEL.md](./docs/LOCATION_MODEL.md) | The location lifecycle, coarsening, k-anonymity, browser limits |
 | [DEPLOYMENT.md](./docs/DEPLOYMENT.md) | Supabase + Vercel setup, environment variables, scheduled jobs |
 | [diagrams/](./docs/diagrams) | The three diagrams the docs above embed, as standalone SVGs |
+| [index.html](./docs/index.html) | A browsable index of everything below — open it in a browser |
 
 ---
 
