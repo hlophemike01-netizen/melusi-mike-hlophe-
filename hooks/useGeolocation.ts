@@ -45,37 +45,42 @@ export function useGeolocation(): UseGeolocationResult {
   const watchIdRef = useRef<number | null>(null);
 
   // Passive permission check. Does not prompt and does not read a position.
+  //
+  // All of it runs in an async function so that nothing sets state during the
+  // effect body itself — the state only moves when the browser answers.
   useEffect(() => {
     let cancelled = false;
-
-    if (typeof navigator === 'undefined' || !('geolocation' in navigator)) {
-      setPermission('unsupported');
-      return;
-    }
-
-    if (!('permissions' in navigator)) {
-      // Safari < 16 has no Permissions API. Stay at 'unknown' rather than
-      // probing, because probing means prompting.
-      setPermission('unknown');
-      return;
-    }
-
     let status: PermissionStatus | null = null;
+
     const onChange = () => {
       if (status && !cancelled) setPermission(status.state as LocationPermissionState);
     };
 
-    navigator.permissions
-      .query({ name: 'geolocation' as PermissionName })
-      .then((result) => {
+    const detect = async () => {
+      if (typeof navigator === 'undefined' || !('geolocation' in navigator)) {
+        if (!cancelled) setPermission('unsupported');
+        return;
+      }
+
+      if (!('permissions' in navigator)) {
+        // Older Safari has no Permissions API. Stay at 'unknown' rather than
+        // probing with getCurrentPosition, because probing means prompting.
+        if (!cancelled) setPermission('unknown');
+        return;
+      }
+
+      try {
+        const result = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
         if (cancelled) return;
         status = result;
         setPermission(result.state as LocationPermissionState);
         result.addEventListener('change', onChange);
-      })
-      .catch(() => {
+      } catch {
         if (!cancelled) setPermission('unknown');
-      });
+      }
+    };
+
+    void detect();
 
     return () => {
       cancelled = true;

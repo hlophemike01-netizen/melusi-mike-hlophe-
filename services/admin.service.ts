@@ -134,7 +134,6 @@ export async function recordAuditEvent(
   if (error) {
     // An audit write failing must not break the user's action, but it must be
     // visible to operators.
-    // eslint-disable-next-line no-console
     console.error('[safecircle] audit write failed:', error);
   }
 }

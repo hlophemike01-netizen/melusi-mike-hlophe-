@@ -176,7 +176,6 @@ export function toAppError(error: unknown, fallbackMessage = 'Something went wro
 export function handleServiceError(context: string, error: unknown, fallbackMessage?: string): AppError {
   const appError = toAppError(error, fallbackMessage);
   if (appError.code === 'unknown' || appError.status >= 500) {
-    // eslint-disable-next-line no-console
     console.error(`[safecircle] ${context}:`, error);
   }
   return appError;

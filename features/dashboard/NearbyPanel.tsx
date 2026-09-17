@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { CommunityActivityCard } from '@/features/dashboard/CommunityActivityCard';
 import { toAppError } from '@/lib/errors';
@@ -59,12 +59,24 @@ export function NearbyPanel() {
 
   // Once permission is already granted, refreshing on return costs nothing
   // extra in privacy terms — the browser will not prompt again.
+  //
+  // The ref guard makes this run once per mount, and awaiting a resolved
+  // promise first keeps every state update out of the effect body itself.
+  const autoLoadedRef = useRef(false);
   useEffect(() => {
-    if (permission === 'granted' && !enabled && !loading) {
-      void load();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [permission]);
+    if (permission !== 'granted' || autoLoadedRef.current) return;
+    autoLoadedRef.current = true;
+
+    let cancelled = false;
+    void (async () => {
+      await Promise.resolve();
+      if (!cancelled) await load();
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [permission, load]);
 
   if (!enabled && !loading) {
     return (
