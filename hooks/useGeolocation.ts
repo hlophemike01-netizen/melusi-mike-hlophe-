@@ -44,6 +44,13 @@ export function useGeolocation(): UseGeolocationResult {
   const [watching, setWatching] = useState(false);
   const watchIdRef = useRef<number | null>(null);
 
+  // The passive Permissions API probe resolves asynchronously. If the user has
+  // already pressed a button by the time it answers, its (older) answer must
+  // not overwrite what the actual geolocation call told us — otherwise a
+  // 'denied' result can flip back to 'prompt' and the UI offers a button that
+  // cannot work.
+  const settledFromRequestRef = useRef(false);
+
   // Passive permission check. Does not prompt and does not read a position.
   //
   // All of it runs in an async function so that nothing sets state during the
@@ -53,19 +60,27 @@ export function useGeolocation(): UseGeolocationResult {
     let status: PermissionStatus | null = null;
 
     const onChange = () => {
-      if (status && !cancelled) setPermission(status.state as LocationPermissionState);
+      if (status && !cancelled) {
+        settledFromRequestRef.current = false;
+        setPermission(status.state as LocationPermissionState);
+      }
+    };
+
+    const applyProbeResult = (next: LocationPermissionState) => {
+      if (cancelled || settledFromRequestRef.current) return;
+      setPermission(next);
     };
 
     const detect = async () => {
-      if (typeof navigator === 'undefined' || !('geolocation' in navigator)) {
-        if (!cancelled) setPermission('unsupported');
+      if (typeof navigator === 'undefined' || !navigator.geolocation) {
+        applyProbeResult('unsupported');
         return;
       }
 
-      if (!('permissions' in navigator)) {
+      if (!navigator.permissions?.query) {
         // Older Safari has no Permissions API. Stay at 'unknown' rather than
         // probing with getCurrentPosition, because probing means prompting.
-        if (!cancelled) setPermission('unknown');
+        applyProbeResult('unknown');
         return;
       }
 
@@ -73,10 +88,11 @@ export function useGeolocation(): UseGeolocationResult {
         const result = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
         if (cancelled) return;
         status = result;
-        setPermission(result.state as LocationPermissionState);
+        applyProbeResult(result.state as LocationPermissionState);
+        // A later change event IS authoritative — the user changed the setting.
         result.addEventListener('change', onChange);
       } catch {
-        if (!cancelled) setPermission('unknown');
+        applyProbeResult('unknown');
       }
     };
 
@@ -111,7 +127,7 @@ export function useGeolocation(): UseGeolocationResult {
   };
 
   const requestOnce = useCallback(async (): Promise<GeolocationReading | null> => {
-    if (typeof navigator === 'undefined' || !('geolocation' in navigator)) {
+    if (typeof navigator === 'undefined' || !navigator.geolocation) {
       setPermission('unsupported');
       setError('This browser does not support location.');
       return null;
@@ -123,13 +139,17 @@ export function useGeolocation(): UseGeolocationResult {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const next = toReading(position);
+          settledFromRequestRef.current = true;
           setReading(next);
           setPermission('granted');
           resolve(next);
         },
         (positionError) => {
           setError(describeError(positionError));
-          if (positionError.code === positionError.PERMISSION_DENIED) setPermission('denied');
+          if (positionError.code === positionError.PERMISSION_DENIED) {
+            settledFromRequestRef.current = true;
+            setPermission('denied');
+          }
           resolve(null);
         },
         { enableHighAccuracy: true, timeout: 15_000, maximumAge: 10_000 },
@@ -138,7 +158,7 @@ export function useGeolocation(): UseGeolocationResult {
   }, []);
 
   const startWatching = useCallback(() => {
-    if (typeof navigator === 'undefined' || !('geolocation' in navigator)) {
+    if (typeof navigator === 'undefined' || !navigator.geolocation) {
       setPermission('unsupported');
       return;
     }
@@ -147,12 +167,14 @@ export function useGeolocation(): UseGeolocationResult {
     setError(null);
     watchIdRef.current = navigator.geolocation.watchPosition(
       (position) => {
+        settledFromRequestRef.current = true;
         setReading(toReading(position));
         setPermission('granted');
       },
       (positionError) => {
         setError(describeError(positionError));
         if (positionError.code === positionError.PERMISSION_DENIED) {
+          settledFromRequestRef.current = true;
           setPermission('denied');
           if (watchIdRef.current !== null) {
             navigator.geolocation.clearWatch(watchIdRef.current);

@@ -2,7 +2,7 @@
   "name": "safecircle",
   "version": "1.0.0",
   "private": true,
-  "description": "SafeCircle — a consent-first community safety and activity PWA.",
+  "description": "SafeCircle \u2014 a consent-first community safety and activity PWA.",
   "engines": {
     "node": ">=20.9.0"
   },
@@ -16,7 +16,9 @@
     "test:watch": "vitest",
     "test:security": "vitest run tests/security",
     "verify": "npm run typecheck && npm run lint && npm run test",
-    "db:lint": "node scripts/check-migrations.mjs"
+    "test:db": "bash scripts/db-test.sh",
+    "verify:all": "npm run typecheck && npm run lint && npm run test && npm run test:db",
+    "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",
