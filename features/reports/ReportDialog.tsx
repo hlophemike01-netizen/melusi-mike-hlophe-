@@ -143,7 +143,7 @@ export function ReportDialog({
         ) : null}
 
         <InlineNotice tone="caution">
-          If you are in immediate danger, call your local emergency number. SafeCircle does not
+          If you are in immediate danger, call your local emergency number. Mwhite SafeCircle does not
           contact emergency services.
         </InlineNotice>
 

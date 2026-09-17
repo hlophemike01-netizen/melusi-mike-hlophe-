@@ -159,7 +159,7 @@ else.
 
 | Column | Notes |
 | --- | --- |
-| `recipient_user_id` | Set when the contact has a SafeCircle account. The column RLS matches on |
+| `recipient_user_id` | Set when the contact has a Mwhite SafeCircle account. The column RLS matches on |
 | `token_hash` | SHA-256 of a link token for contacts without an account. The raw token is shown to the owner once and never stored |
 | `expires_at` | `CHECK` ≤ `granted_at + 24 hours` |
 | `revoked_at` | Checked on every authorisation call, so revocation is immediate |

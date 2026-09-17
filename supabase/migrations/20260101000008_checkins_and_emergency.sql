@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0008 — check-ins and emergency events
+-- Mwhite SafeCircle 0008 — check-ins and emergency events
 -- ============================================================================
 
 -- Resolve PostGIS/pgcrypto wherever they are installed for the duration of
@@ -111,7 +111,7 @@ create table public.emergency_events (
 );
 
 comment on table public.emergency_events is
-  'User-activated emergency state. `emergency_services_contacted` is false in V1 — SafeCircle has no verified dispatch integration.';
+  'User-activated emergency state. `emergency_services_contacted` is false in V1 — Mwhite SafeCircle has no verified dispatch integration.';
 comment on column public.emergency_events.emergency_services_contacted is
   'Only a verified emergency-services integration may set this true. Never set it from the client.';
 

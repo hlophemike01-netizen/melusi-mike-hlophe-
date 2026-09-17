@@ -3,7 +3,7 @@ import type { Db } from '@/services/types';
 import type { SharedLocationRow } from '@/types/database';
 
 /**
- * Token-based share links, for trusted contacts who do not have a SafeCircle
+ * Token-based share links, for trusted contacts who do not have a Mwhite SafeCircle
  * account.
  *
  * The token IS the credential, so it is treated like one: it is generated

@@ -12,13 +12,13 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           >
             ◎
           </span>
-          <span className="text-xl font-bold tracking-tight">SafeCircle</span>
+          <span className="text-xl font-bold tracking-tight">Mwhite SafeCircle</span>
         </Link>
         {children}
       </div>
 
       <footer className="mx-auto mt-8 w-full max-w-md text-center text-xs text-secondary">
-        <p>SafeCircle does not replace emergency services.</p>
+        <p>Mwhite SafeCircle does not replace emergency services.</p>
         <Link href="/legal/privacy" className="mt-1 inline-block underline">
           How we handle your location
         </Link>

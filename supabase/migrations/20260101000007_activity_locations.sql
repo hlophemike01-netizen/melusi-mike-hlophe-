@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0007 — precise location points
+-- Mwhite SafeCircle 0007 — precise location points
 --
 -- This is the most sensitive table in the system. Everything about it is
 -- defensive:

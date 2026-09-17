@@ -83,7 +83,7 @@ export function NearbyPanel() {
       <div className="surface rounded-[var(--radius-card)] border border-subtle p-4">
         <h2 className="text-base font-semibold">Nearby right now</h2>
         <p className="mt-1 text-sm text-secondary">
-          See how many people are active in your area. SafeCircle uses your location once to fetch
+          See how many people are active in your area. Mwhite SafeCircle uses your location once to fetch
           counts — it is not stored, and nothing about you is shared.
         </p>
         {error ? (

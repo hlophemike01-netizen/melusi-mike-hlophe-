@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0004 — community groups and membership
+-- Mwhite SafeCircle 0004 — community groups and membership
 -- ============================================================================
 
 -- Resolve PostGIS/pgcrypto wherever they are installed for the duration of

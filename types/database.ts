@@ -237,7 +237,7 @@ export interface OpenedShareRow {
   contact_id: string;
   contact_name: string;
   recipient_user_id: string | null;
-  /** Present only for contacts without a SafeCircle account. Shown once. */
+  /** Present only for contacts without a Mwhite SafeCircle account. Shown once. */
   share_token: string | null;
   expires_at: string;
 }

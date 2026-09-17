@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * SafeCircle service worker.
+ * Mwhite SafeCircle service worker.
  *
  * Scope is deliberately narrow. It caches the application shell and static
  * assets so the app opens offline, and it serves an offline page for
@@ -15,7 +15,7 @@
  *     geolocation at all; see docs/LOCATION_MODEL.md.
  */
 
-const VERSION = 'safecircle-v1';
+const VERSION = 'mwhite-safecircle-v1';
 const SHELL_CACHE = `${VERSION}-shell`;
 const OFFLINE_URL = '/offline';
 

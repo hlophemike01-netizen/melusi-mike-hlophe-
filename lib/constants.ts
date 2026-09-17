@@ -17,11 +17,11 @@ import type {
  */
 export const SAFETY_COPY = {
   notEmergencyServices:
-    'SafeCircle does not replace emergency services. In an emergency, call your local emergency number.',
+    'Mwhite SafeCircle does not replace emergency services. In an emergency, call your local emergency number.',
   locationOptional: 'Location sharing is optional. It stays off until you turn it on.',
   onlyAuthorised: 'Only people you authorize can see your precise location.',
   noGuarantee:
-    'SafeCircle helps you share your plans with people you trust. It cannot guarantee your safety.',
+    'Mwhite SafeCircle helps you share your plans with people you trust. It cannot guarantee your safety.',
   backgroundLimitation:
     'Location updates pause when this app is closed or your screen is locked. Web browsers do not allow continuous background location.',
   contactsAlerted:
@@ -71,7 +71,7 @@ export const VISIBILITY_OPTIONS: VisibilityOption[] = [
     label: 'Private',
     summary: 'Nobody can see your location',
     detail:
-      'Your location is recorded only for your own check-in timer and is deleted when the activity ends. Nobody else can see it — not other members, not SafeCircle administrators.',
+      'Your location is recorded only for your own check-in timer and is deleted when the activity ends. Nobody else can see it — not other members, not Mwhite SafeCircle administrators.',
     sharesPreciseLocation: false,
   },
   {

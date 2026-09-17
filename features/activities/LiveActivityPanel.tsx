@@ -152,7 +152,7 @@ export function LiveActivityPanel({
                   <li key={share.id} className="flex items-center justify-between gap-3 text-sm">
                     <span className="min-w-0">
                       <span className="block truncate font-medium">
-                        {share.recipient_user_id ? 'SafeCircle member' : 'Share link'}
+                        {share.recipient_user_id ? 'Mwhite SafeCircle member' : 'Share link'}
                       </span>
                       <span className="block text-xs text-secondary">
                         Until{' '}

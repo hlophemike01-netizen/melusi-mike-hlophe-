@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0012 — community map RPCs
+-- Mwhite SafeCircle 0012 — community map RPCs
 --
 -- These are the ONLY functions that expose anything geographic to a user who
 -- is not personally authorised. They read `activities.approx_location` (already

@@ -8,7 +8,7 @@ import { Select } from '@/components/ui/Input';
 import { InlineNotice } from '@/components/ui/States';
 import { PrivacyControl } from '@/features/privacy/PrivacyControl';
 import { SAFETY_COPY, VISIBILITY_OPTIONS } from '@/lib/constants';
-import { COMMUNITY_GRID_DEGREES, K_ANONYMITY_THRESHOLD, gridSizeMetres } from '@/lib/geo';
+import { K_ANONYMITY_THRESHOLD } from '@/lib/geo';
 import { useAsyncAction } from '@/hooks/useAsyncAction';
 import { useSupabase } from '@/hooks/useSupabase';
 import { eraseMyLocationHistory } from '@/services/activity.service';
@@ -80,7 +80,7 @@ export function PrivacySettings({
           <PrivacyControl
             tone="sharing"
             label="Allow location sharing"
-            description="The master switch. While this is off, SafeCircle cannot record or share your location at all, and only private activities can be started. Turning it off also ends any activity running right now."
+            description="The master switch. While this is off, Mwhite SafeCircle cannot record or share your location at all, and only private activities can be started. Turning it off also ends any activity running right now."
             checked={locationSharing}
             onChange={setLocationSharing}
           />
@@ -159,7 +159,7 @@ export function PrivacySettings({
       <Card>
         <CardHeader title="Delete my location data" />
         <p className="text-sm text-secondary">
-          SafeCircle already deletes precise locations when an activity ends, and expired points are
+          Mwhite SafeCircle already deletes precise locations when an activity ends, and expired points are
           purged automatically. This removes anything still stored right now.
         </p>
         {erased !== null ? (
@@ -192,14 +192,12 @@ export function PrivacySettings({
             authorize, and only until it expires or you revoke it.
           </li>
           <li>
-            {/* Quoted at the equator, where a grid cell is widest — the honest
-                worst case rather than a flattering local figure. */}
-            <strong>The community map:</strong> at most, that someone is active in a grid square of
-            roughly {gridSizeMetres(0, COMMUNITY_GRID_DEGREES)}m — and only where at least{' '}
-            {K_ANONYMITY_THRESHOLD} people are active.
+            <strong>The community map:</strong> at most, that someone is active in a grid square
+            of roughly a kilometre — and only where at least {K_ANONYMITY_THRESHOLD} people are
+            active.
           </li>
           <li>
-            <strong>SafeCircle administrators:</strong> your display name and account status.
+            <strong>Mwhite SafeCircle administrators:</strong> your display name and account status.
             Administrators cannot see your location, your activities or your trusted contacts.
           </li>
         </ul>

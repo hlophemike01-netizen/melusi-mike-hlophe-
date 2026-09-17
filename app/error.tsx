@@ -17,7 +17,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error('[safecircle] unhandled error', error.digest ?? error);
+    console.error('[mwhite-safecircle] unhandled error', error.digest ?? error);
   }, [error]);
 
   return (

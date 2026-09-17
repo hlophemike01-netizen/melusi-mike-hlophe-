@@ -6,7 +6,7 @@ This is the heart of the product. If you read one document, read this one.
 
 ## Two kinds of location, kept apart
 
-SafeCircle stores location in exactly two places, and they never mix:
+Mwhite SafeCircle stores location in exactly two places, and they never mix:
 
 | | `activity_locations.location` | `activities.approx_location` |
 | --- | --- | --- |
@@ -70,7 +70,7 @@ mentions `activity_locations`) and once against a live database.
 
 ## When permission is requested
 
-> SafeCircle must never ask for location during ordinary browsing.
+> Mwhite SafeCircle must never ask for location during ordinary browsing.
 
 `useGeolocation` reads permission state through
 `navigator.permissions.query({ name: 'geolocation' })`, which never prompts and
@@ -95,7 +95,7 @@ calls neither function, **even when permission is already granted** — an
 existing grant is not consent to read a position unasked.
 
 Declining is a supported path, not an error. The app says so: *"Location
-permission was declined. You can still use SafeCircle — location sharing is
+permission was declined. You can still use Mwhite SafeCircle — location sharing is
 optional."*
 
 ---
@@ -170,7 +170,7 @@ A share is a **session**, not a standing permission:
 - automatically revoked when the activity ends, when the owner is suspended, or
   when either party blocks the other.
 
-For contacts **with** a SafeCircle account, `recipient_user_id` is matched by
+For contacts **with** a Mwhite SafeCircle account, `recipient_user_id` is matched by
 RLS directly.
 
 For contacts **without** one, `open_trusted_shares()` generates a 32-byte
@@ -189,7 +189,7 @@ window, hashing at rest, one-time display and instant revocation.
 ## The background location limitation
 
 **Continuous background location does not work reliably in a browser, and
-SafeCircle does not claim otherwise.**
+Mwhite SafeCircle does not claim otherwise.**
 
 What actually happens:
 
@@ -204,7 +204,7 @@ What actually happens:
 Service workers cannot access geolocation at all. The Background Geolocation API
 is not available across the browsers this product must support.
 
-**How SafeCircle responds.** `useLocationBroadcast` listens for
+**How Mwhite SafeCircle responds.** `useLocationBroadcast` listens for
 `visibilitychange` and **stops sending** when the page is hidden, rather than
 letting a stale point sit there looking live. The live activity screen shows
 when the last point was sent, and `SAFETY_COPY.backgroundLimitation` appears on

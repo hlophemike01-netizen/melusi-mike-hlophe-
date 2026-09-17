@@ -38,10 +38,10 @@ export function TrustedContactCard({
           </p>
           <p className="mt-0.5 text-xs text-secondary">{permission?.detail}</p>
           {contact.contact_user_id ? (
-            <p className="mt-1 text-xs text-safe-500">Has a SafeCircle account — alerted in-app.</p>
+            <p className="mt-1 text-xs text-safe-500">Has a Mwhite SafeCircle account — alerted in-app.</p>
           ) : (
             <p className="mt-1 text-xs text-secondary">
-              No SafeCircle account — you will get a link to send them.
+              No Mwhite SafeCircle account — you will get a link to send them.
             </p>
           )}
         </div>

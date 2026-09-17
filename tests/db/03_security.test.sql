@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle — database security suite
+-- Mwhite SafeCircle — database security suite
 --
 -- Every assertion runs as the `authenticated` PostgREST role with a forged
 -- JWT claim, i.e. exactly what a browser client can do. If a policy is wrong,

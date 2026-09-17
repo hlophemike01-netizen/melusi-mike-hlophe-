@@ -116,7 +116,7 @@ export function useGeolocation(): UseGeolocationResult {
   const describeError = (positionError: GeolocationPositionError): string => {
     switch (positionError.code) {
       case positionError.PERMISSION_DENIED:
-        return 'Location permission was declined. You can still use SafeCircle — location sharing is optional.';
+        return 'Location permission was declined. You can still use Mwhite SafeCircle — location sharing is optional.';
       case positionError.POSITION_UNAVAILABLE:
         return 'We could not get a location fix. Try moving somewhere with a clearer view of the sky.';
       case positionError.TIMEOUT:

@@ -42,7 +42,7 @@ export default function ResetPasswordPage() {
       <Card>
         <h1 className="text-xl font-bold">Check your email</h1>
         <p className="mt-2 text-sm text-secondary">
-          If that address has a SafeCircle account, we have sent a link to reset the password. The
+          If that address has a Mwhite SafeCircle account, we have sent a link to reset the password. The
           link expires in one hour.
         </p>
         <Link

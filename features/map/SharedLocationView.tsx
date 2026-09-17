@@ -78,7 +78,7 @@ export function SharedLocationView({ token }: { token: string }) {
             {data.sharer_name} has activated emergency mode
           </h1>
           <p className="mt-1.5 text-sm">
-            They asked SafeCircle to alert you. <strong>Emergency services have not been
+            They asked Mwhite SafeCircle to alert you. <strong>Emergency services have not been
             contacted</strong> — if you believe they are in danger, call your local emergency number.
           </p>
         </div>

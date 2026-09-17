@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0014 — administrative RPCs
+-- Mwhite SafeCircle 0014 — administrative RPCs
 --
 -- Administrators get COUNTS and MODERATION CONTROLS. They do not get a
 -- location browser. Nothing in this file returns a coordinate, and every

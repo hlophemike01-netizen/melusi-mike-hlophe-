@@ -8,10 +8,10 @@ export interface ActivateEmergencyResult {
   event: EmergencyEventRow;
   /** Contacts alerted in-app. */
   notifiedCount: number;
-  /** One-time links for contacts without a SafeCircle account. */
+  /** One-time links for contacts without a Mwhite SafeCircle account. */
   shareLinks: OpenedShareRow[];
   /**
-   * Always false in V1. SafeCircle has no verified emergency-services
+   * Always false in V1. Mwhite SafeCircle has no verified emergency-services
    * integration, and the database refuses to let a client set this true.
    */
   emergencyServicesContacted: boolean;
@@ -121,7 +121,7 @@ export async function getActiveEmergency(db: Db): Promise<EmergencyEventRow | nu
 /**
  * Resolves an emergency. Only the person who raised it can, which is
  * deliberate: an administrator marking someone else "safe" would be a
- * statement about their wellbeing that nobody at SafeCircle is in a position
+ * statement about their wellbeing that nobody at Mwhite SafeCircle is in a position
  * to make.
  */
 export async function resolveEmergency(

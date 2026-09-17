@@ -8,7 +8,7 @@ const PROMISES = [
   {
     icon: '🔒',
     title: 'Off by default',
-    body: 'SafeCircle never asks for your location until you start something that needs it. Nothing is shared until you say so.',
+    body: 'Mwhite SafeCircle never asks for your location until you start something that needs it. Nothing is shared until you say so.',
   },
   {
     icon: '👥',
@@ -47,14 +47,14 @@ export default async function LandingPage() {
           >
             ◎
           </span>
-          <span className="text-xl font-bold tracking-tight">SafeCircle</span>
+          <span className="text-xl font-bold tracking-tight">Mwhite SafeCircle</span>
         </header>
 
         <h1 className="mt-10 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
           Tell someone where you are going. Nobody else.
         </h1>
         <p className="mt-3 text-base leading-relaxed text-secondary">
-          SafeCircle lets you start a temporary safety activity — a walk home, a run, a journey —
+          Mwhite SafeCircle lets you start a temporary safety activity — a walk home, a run, a journey —
           and share it with the people you choose, for as long as you choose.
         </p>
 
@@ -73,7 +73,7 @@ export default async function LandingPage() {
           </Link>
         </div>
 
-        <section aria-label="How SafeCircle protects you" className="mt-10 space-y-3">
+        <section aria-label="How Mwhite SafeCircle protects you" className="mt-10 space-y-3">
           {PROMISES.map((promise) => (
             <div key={promise.title} className="surface rounded-[var(--radius-card)] border border-subtle p-4">
               <div className="flex gap-3">
@@ -90,7 +90,7 @@ export default async function LandingPage() {
         </section>
 
         <section className="mt-8 rounded-[var(--radius-card)] border border-caution-500/40 bg-caution-50 p-4 dark:bg-caution-500/10">
-          <h2 className="font-semibold">What SafeCircle is not</h2>
+          <h2 className="font-semibold">What Mwhite SafeCircle is not</h2>
           <p className="mt-1.5 text-sm leading-relaxed">{SAFETY_COPY.notEmergencyServices}</p>
           <p className="mt-1.5 text-sm leading-relaxed">{SAFETY_COPY.noGuarantee}</p>
           <p className="mt-1.5 text-sm leading-relaxed">{SAFETY_COPY.backgroundLimitation}</p>
@@ -98,7 +98,7 @@ export default async function LandingPage() {
 
         <footer className="mt-10 border-t border-subtle pt-5 text-sm text-secondary">
           <Link href="/legal/privacy" className="font-semibold underline">
-            How SafeCircle handles your location
+            How Mwhite SafeCircle handles your location
           </Link>
         </footer>
       </div>

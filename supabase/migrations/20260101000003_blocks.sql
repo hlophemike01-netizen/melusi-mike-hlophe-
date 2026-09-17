@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0003 — user blocks
+-- Mwhite SafeCircle 0003 — user blocks
 --
 -- A block is directional in storage but bidirectional in effect: if A blocks
 -- B, neither may see or interact with the other. Blocks are evaluated by

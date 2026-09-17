@@ -115,7 +115,7 @@ export function StartActivityForm({
       const reading = await requestOnce();
       if (!reading && visibility !== 'private') {
         setErrors({
-          form: 'SafeCircle needs location permission to share your activity. You can start a private activity instead.',
+          form: 'Mwhite SafeCircle needs location permission to share your activity. You can start a private activity instead.',
         });
         throw new Error('permission');
       }
@@ -354,7 +354,7 @@ export function StartActivityForm({
         <div className="mt-3">
           <Input
             label="Where are you heading? (optional)"
-            hint="A label only, like “Home via Main Road”. SafeCircle never stores a destination address."
+            hint="A label only, like “Home via Main Road”. Mwhite SafeCircle never stores a destination address."
             value={destination}
             maxLength={200}
             onChange={(event) => setDestination(event.target.value)}

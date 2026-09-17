@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0011 — membership integrity guards
+-- Mwhite SafeCircle 0011 — membership integrity guards
 --
 -- RLS decides *whether* a row may be written. These triggers decide *what* the
 -- row is allowed to say, which is where privilege escalation would otherwise

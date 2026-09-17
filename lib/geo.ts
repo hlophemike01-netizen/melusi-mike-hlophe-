@@ -33,7 +33,19 @@ export function coarsenPoint(point: LatLng, grid = COMMUNITY_GRID_DEGREES): LatL
   };
 }
 
-/** Rough metres-per-degree at this latitude, for describing grid size to users. */
+/**
+ * The NARROWEST edge of a grid cell at this latitude, in metres.
+ *
+ * Cells are square in degrees, not in metres: the north-south extent is a
+ * constant ~1113m, while the east-west extent shrinks by cos(latitude). The
+ * narrow edge is the conservative figure, because a narrower cell localises
+ * someone more precisely — it is the number to reason about when judging how
+ * much protection the grid actually provides, not the flattering equatorial one.
+ *
+ * The UI deliberately says "about a kilometre" rather than calling this: the
+ * true figure depends on the viewer's latitude, and Mwhite SafeCircle will not
+ * ask for someone's location just to render a sentence about privacy.
+ */
 export function gridSizeMetres(latitude: number, grid = COMMUNITY_GRID_DEGREES): number {
   const metresPerDegreeLat = 111_320;
   const metresPerDegreeLng = metresPerDegreeLat * Math.cos((latitude * Math.PI) / 180);

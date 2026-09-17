@@ -26,14 +26,14 @@ export async function POST(request: Request) {
     const { data, error } = await admin.rpc('purge_expired_location_data');
 
     if (error) {
-      console.error('[safecircle] purge job failed:', error);
+      console.error('[mwhite-safecircle] purge job failed:', error);
       return NextResponse.json({ error: 'purge_failed' }, { status: 500 });
     }
 
     const result = Array.isArray(data) ? data[0] : data;
     return NextResponse.json({ ok: true, ...result });
   } catch (cause) {
-    console.error('[safecircle] purge job error:', cause);
+    console.error('[mwhite-safecircle] purge job error:', cause);
     return NextResponse.json({ error: 'purge_failed' }, { status: 500 });
   }
 }

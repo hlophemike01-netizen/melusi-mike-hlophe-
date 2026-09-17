@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0013 — activity, share and emergency RPCs
+-- Mwhite SafeCircle 0013 — activity, share and emergency RPCs
 --
 -- Multi-step, security-sensitive operations live here rather than in the
 -- client, so that "end the activity AND expire its location rows" cannot be
@@ -110,7 +110,7 @@ comment on function public.end_activity is
 -- Open share sessions with the caller's trusted contacts.
 --
 -- `p_contact_ids` narrows the set; null means "every contact whose permission
--- level covers this reason". Contacts without a SafeCircle account get a
+-- level covers this reason". Contacts without a Mwhite SafeCircle account get a
 -- link token, returned to the OWNER once so they can send it themselves.
 -- ---------------------------------------------------------------------------
 create or replace function public.open_trusted_shares(
@@ -204,7 +204,7 @@ comment on function public.open_trusted_shares is
   'Creates time-boxed share grants. Raw link tokens are returned to the owner once and never persisted.';
 
 -- ---------------------------------------------------------------------------
--- Link-token read path, for contacts who do not have a SafeCircle account.
+-- Link-token read path, for contacts who do not have a Mwhite SafeCircle account.
 --
 -- Returns a single coarse-to-precise point plus the sharer's display name.
 -- The token is matched by hash; an expired or revoked grant yields nothing.

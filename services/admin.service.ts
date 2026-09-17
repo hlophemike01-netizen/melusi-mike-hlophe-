@@ -134,6 +134,6 @@ export async function recordAuditEvent(
   if (error) {
     // An audit write failing must not break the user's action, but it must be
     // visible to operators.
-    console.error('[safecircle] audit write failed:', error);
+    console.error('[mwhite-safecircle] audit write failed:', error);
   }
 }

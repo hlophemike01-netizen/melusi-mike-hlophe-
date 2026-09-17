@@ -53,7 +53,7 @@ function makeActivity(overrides: Partial<ActivityRow> = {}): ActivityRow {
 }
 
 describe('standing safety disclaimers', () => {
-  it('states plainly that SafeCircle does not replace emergency services', () => {
+  it('states plainly that Mwhite SafeCircle does not replace emergency services', () => {
     expect(SAFETY_COPY.notEmergencyServices).toMatch(/does not replace emergency services/i);
   });
 

@@ -84,6 +84,14 @@ The community map reads `activities.approx_location`, never
 `activity_locations`. Positions are **grid-snapped** to about 1.1 km by
 `coarsen_point()` before they are stored in that column.
 
+A cell is square in degrees, not in metres: about 1.1 km north to south
+everywhere, and narrower east to west the further you are from the equator
+(roughly 930 m at 33 degrees, 560 m at 60). The narrow edge is the figure to
+judge the protection by, since a narrower cell localises someone more precisely.
+The interface says "about a kilometre" rather than a computed figure, because
+the true number depends on the viewer's latitude, and Mwhite SafeCircle will not
+ask for someone's location just to render a sentence about privacy.
+
 Grid snapping rather than random jitter is a deliberate choice. Random noise
 averages out: given enough samples of the same person, the mean converges on
 their true position. A grid does not — every sample inside a cell collapses to

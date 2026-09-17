@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0010 — Row Level Security
+-- Mwhite SafeCircle 0010 — Row Level Security
 --
 -- Every table below is RLS-enabled with an explicit deny-by-default posture:
 -- if no policy matches, the row is invisible. Operations with no policy at all

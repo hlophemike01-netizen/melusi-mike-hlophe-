@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 /* ===========================================================================
-   SafeCircle design tokens
+   Mwhite SafeCircle design tokens
 
    The palette is deliberately calm. A safety product that looks like an alarm
    panel makes people anxious before anything has happened, so red is reserved
@@ -150,7 +150,7 @@ body {
 }
 
 /* Gentle pulse used only by the active-emergency banner. */
-@keyframes safecircle-pulse {
+@keyframes mwhite-safecircle-pulse {
   0%,
   100% {
     opacity: 1;
@@ -161,5 +161,5 @@ body {
 }
 
 .animate-emergency-pulse {
-  animation: safecircle-pulse 2s ease-in-out infinite;
+  animation: mwhite-safecircle-pulse 2s ease-in-out infinite;
 }

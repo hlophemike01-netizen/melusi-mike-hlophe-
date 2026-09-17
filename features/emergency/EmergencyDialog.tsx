@@ -125,7 +125,7 @@ export function EmergencyDialog({
           <div className="rounded-xl border border-subtle p-3">
             <h3 className="text-sm font-semibold">What happens next</h3>
             <ul className="mt-2 space-y-1.5 text-sm text-secondary">
-              <li>✅ Your trusted contacts are alerted in SafeCircle.</li>
+              <li>✅ Your trusted contacts are alerted in Mwhite SafeCircle.</li>
               <li>✅ They can see your current location while this stays on.</li>
               <li>✅ Your activity switches to emergency status.</li>
               <li className="font-medium text-alert-700 dark:text-alert-50">
@@ -162,7 +162,7 @@ export function EmergencyDialog({
       ) : (
         <div className="space-y-4">
           <InlineNotice tone="caution">
-            <strong>Emergency services have not been contacted.</strong> SafeCircle alerted your
+            <strong>Emergency services have not been contacted.</strong> Mwhite SafeCircle alerted your
             trusted contacts only. <EmergencyNumberLink />
           </InlineNotice>
 
@@ -185,7 +185,7 @@ export function EmergencyDialog({
             <div className="rounded-xl border border-subtle p-3">
               <h3 className="text-sm font-semibold">Send these links</h3>
               <p className="mt-1 text-sm text-secondary">
-                These contacts do not have a SafeCircle account. Send them their link — SafeCircle
+                These contacts do not have a Mwhite SafeCircle account. Send them their link — Mwhite SafeCircle
                 cannot send messages for you. Each link is shown once.
               </p>
               <ul className="mt-2 space-y-2">

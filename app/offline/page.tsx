@@ -17,7 +17,7 @@ export default function OfflinePage() {
         </span>
         <h1 className="mt-4 text-2xl font-bold">You are offline</h1>
         <p className="mt-2 text-sm leading-relaxed text-secondary">
-          SafeCircle needs a connection to show live activities, groups and locations. We do not
+          Mwhite SafeCircle needs a connection to show live activities, groups and locations. We do not
           show cached safety information, because it could be out of date.
         </p>
         <p className="mt-4 text-sm leading-relaxed text-secondary">

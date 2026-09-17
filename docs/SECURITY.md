@@ -119,7 +119,7 @@ What an administrator **cannot** do:
 - read anyone's trusted contacts or their phone numbers;
 - resolve someone else's emergency — only the person who raised it can, because
   marking someone else "safe" is a statement about their wellbeing that nobody
-  at SafeCircle is in a position to make;
+  at Mwhite SafeCircle is in a position to make;
 - modify or delete an audit entry.
 
 Suspension is not just a flag: `admin_suspend_user()` ends the account's live

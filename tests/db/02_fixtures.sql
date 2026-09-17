@@ -29,7 +29,7 @@ insert into public.group_members (group_id, user_id, role, status, joined_at)
 values ('aaaa0000-0000-0000-0000-00000000000a', '44444444-4444-4444-4444-444444444444',
         'member', 'approved', now());
 
--- Carol is one of Alice's trusted contacts, and has a SafeCircle account.
+-- Carol is one of Alice's trusted contacts, and has a Mwhite SafeCircle account.
 insert into public.emergency_contacts (id, owner_id, name, phone, relationship, permission_level, contact_user_id)
 values ('cccc0000-0000-0000-0000-00000000000c', '11111111-1111-1111-1111-111111111111',
         'Carol', '+27821110003', 'Sister', 'always_when_enabled',

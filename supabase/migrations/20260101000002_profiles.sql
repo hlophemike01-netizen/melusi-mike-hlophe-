@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0002 — profiles
+-- Mwhite SafeCircle 0002 — profiles
 --
 -- A profile row is created automatically for every auth user. Private columns
 -- (email, phone) are NEVER exposed to other users: readers outside the owner

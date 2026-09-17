@@ -31,7 +31,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         <div className="mx-auto max-w-6xl px-4 py-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h1 className="text-xl font-bold tracking-tight">SafeCircle admin</h1>
+              <h1 className="text-xl font-bold tracking-tight">Mwhite SafeCircle admin</h1>
               <p className="text-sm text-secondary">
                 Signed in as {profile?.display_name} · {profile?.role}
               </p>

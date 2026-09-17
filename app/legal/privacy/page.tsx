@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SAFETY_COPY } from '@/lib/constants';
-import { COMMUNITY_GRID_DEGREES, K_ANONYMITY_THRESHOLD, gridSizeMetres } from '@/lib/geo';
+import { K_ANONYMITY_THRESHOLD } from '@/lib/geo';
 
 export const metadata: Metadata = { title: 'How we handle your location' };
 
@@ -14,23 +14,21 @@ export const metadata: Metadata = { title: 'How we handle your location' };
  * counterpart.
  */
 export default function PrivacyExplainerPage() {
-  const gridMetres = gridSizeMetres(-33, COMMUNITY_GRID_DEGREES);
-
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
       <Link href="/" className="text-sm font-semibold text-brand-700 dark:text-brand-300">
         ← Back
       </Link>
 
-      <h1 className="mt-5 text-3xl font-bold tracking-tight">How SafeCircle handles your location</h1>
+      <h1 className="mt-5 text-3xl font-bold tracking-tight">How Mwhite SafeCircle handles your location</h1>
       <p className="mt-3 text-base leading-relaxed text-secondary">
-        SafeCircle is built so that it cannot become a tracking system, even by accident. This page
+        Mwhite SafeCircle is built so that it cannot become a tracking system, even by accident. This page
         explains exactly what is collected, who can see it and how long it lasts.
       </p>
 
       <Section title="Nothing is shared until you turn it on">
         <p>
-          Location sharing is off when you create your account. SafeCircle does not ask your browser
+          Location sharing is off when you create your account. Mwhite SafeCircle does not ask your browser
           for your location while you browse — the permission prompt only appears when you start
           something that needs it, and you can decline.
         </p>
@@ -67,17 +65,16 @@ export default function PrivacyExplainerPage() {
           removes anything expired at least every fifteen minutes.
         </p>
         <p>
-          There is no feature anywhere in SafeCircle that shows another person&apos;s movement over
+          There is no feature anywhere in Mwhite SafeCircle that shows another person&apos;s movement over
           time. Someone you have authorized sees your current position and nothing else.
         </p>
       </Section>
 
       <Section title="The community map shows counts, not people">
         <p>
-          The map never shows where an individual is. Positions are rounded to a grid of about{' '}
-          {gridMetres} metres before they are counted, and any area with fewer than{' '}
-          {K_ANONYMITY_THRESHOLD} people is hidden entirely — so a single person can never be picked
-          out of a count.
+          The map never shows where an individual is. Positions are rounded to a grid of roughly a
+          kilometre before they are counted, and any area with fewer than {K_ANONYMITY_THRESHOLD}{' '}
+          people is hidden entirely — so a single person can never be picked out of a count.
         </p>
         <p>
           Only people who chose the community-count option appear at all. Private, group and
@@ -93,9 +90,9 @@ export default function PrivacyExplainerPage() {
         </p>
       </Section>
 
-      <Section title="What SafeCircle staff can see">
+      <Section title="What Mwhite SafeCircle staff can see">
         <p>
-          Administrators can see how many people use SafeCircle, review reports and suspend
+          Administrators can see how many people use Mwhite SafeCircle, review reports and suspend
           accounts. They <strong>cannot</strong> see your location, your activities or your trusted
           contacts. That is enforced by the database, not by a policy — the access simply does not
           exist. Every administrative action is recorded in an append-only log.
@@ -106,7 +103,7 @@ export default function PrivacyExplainerPage() {
         <p>
           Activating emergency mode alerts the trusted contacts you have set up and shares your
           location with them. <strong>It does not contact police, ambulance or fire services.</strong>{' '}
-          SafeCircle has no connection to emergency services.
+          Mwhite SafeCircle has no connection to emergency services.
         </p>
         <p>{SAFETY_COPY.notEmergencyServices}</p>
       </Section>
@@ -115,7 +112,7 @@ export default function PrivacyExplainerPage() {
         <p>{SAFETY_COPY.backgroundLimitation}</p>
         <p>{SAFETY_COPY.noGuarantee}</p>
         <p>
-          SafeCircle cannot send SMS messages or make phone calls. Contacts without a SafeCircle
+          Mwhite SafeCircle cannot send SMS messages or make phone calls. Contacts without a Mwhite SafeCircle
           account receive a link that you send them yourself.
         </p>
       </Section>

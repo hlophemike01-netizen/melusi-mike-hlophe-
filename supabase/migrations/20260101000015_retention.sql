@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0015 — retention and scheduled maintenance
+-- Mwhite SafeCircle 0015 — retention and scheduled maintenance
 --
 -- Expiry is enforced twice: RLS refuses expired rows on read, and these jobs
 -- physically delete them. Belt and braces, because "we filtered it out on

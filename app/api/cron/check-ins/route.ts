@@ -25,14 +25,14 @@ export async function POST(request: Request) {
     const { data, error } = await admin.rpc('sweep_missed_check_ins', { p_grace_minutes: 5 });
 
     if (error) {
-      console.error('[safecircle] check-in sweep failed:', error);
+      console.error('[mwhite-safecircle] check-in sweep failed:', error);
       return NextResponse.json({ error: 'sweep_failed' }, { status: 500 });
     }
 
     const result = Array.isArray(data) ? data[0] : data;
     return NextResponse.json({ ok: true, ...result });
   } catch (cause) {
-    console.error('[safecircle] check-in sweep error:', cause);
+    console.error('[mwhite-safecircle] check-in sweep error:', cause);
     return NextResponse.json({ error: 'sweep_failed' }, { status: 500 });
   }
 }

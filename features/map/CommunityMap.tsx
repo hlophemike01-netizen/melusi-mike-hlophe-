@@ -86,7 +86,7 @@ export function CommunityMap() {
           environment — see <code>.env.example</code>.
         </InlineNotice>
         <p className="text-sm text-secondary">
-          Everything else in SafeCircle works without it. The map only ever shows approximate area
+          Everything else in Mwhite SafeCircle works without it. The map only ever shows approximate area
           counts, so nothing private depends on this configuration.
         </p>
       </div>

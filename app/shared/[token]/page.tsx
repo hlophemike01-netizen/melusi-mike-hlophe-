@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * The page a trusted contact without a SafeCircle account opens.
+ * The page a trusted contact without a Mwhite SafeCircle account opens.
  *
  * The token in the URL is the credential. It is never sent to an analytics
  * endpoint, never logged, and the page is marked noindex so a pasted link
@@ -31,7 +31,7 @@ export default async function SharedLocationPage({
         >
           ◎
         </span>
-        <span className="font-bold tracking-tight">SafeCircle</span>
+        <span className="font-bold tracking-tight">Mwhite SafeCircle</span>
       </header>
 
       <SharedLocationView token={token} />
@@ -42,11 +42,11 @@ export default async function SharedLocationPage({
           they can stop it at any moment.
         </p>
         <p className="mt-2">
-          SafeCircle does not replace emergency services. If someone is in danger, call your local
+          Mwhite SafeCircle does not replace emergency services. If someone is in danger, call your local
           emergency number.
         </p>
         <Link href="/" className="mt-2 inline-block font-semibold underline">
-          What is SafeCircle?
+          What is Mwhite SafeCircle?
         </Link>
       </footer>
     </div>

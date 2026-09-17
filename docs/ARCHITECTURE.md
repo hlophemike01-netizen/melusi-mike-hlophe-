@@ -80,7 +80,7 @@ scripts/                    icon generation, database test runner
 
 ## Why `features/` and `components/` are separate
 
-`components/ui/` holds primitives that know nothing about SafeCircle — a
+`components/ui/` holds primitives that know nothing about Mwhite SafeCircle — a
 `Button` does not know what an activity is. `features/` holds components that
 encode product rules: `StartActivityForm` knows that choosing group visibility
 requires a group, `EmergencyDialog` knows that the confirmation must state what
@@ -234,6 +234,6 @@ against a list of realistically leaky errors.
   points the user at their local emergency number.
 
 Background location is not available to a service worker, and browsers throttle
-geolocation for hidden pages. SafeCircle stops sending rather than implying
+geolocation for hidden pages. Mwhite SafeCircle stops sending rather than implying
 continuity. The native-app path for genuine background tracking is described in
 [LOCATION_MODEL.md](./LOCATION_MODEL.md#the-background-location-limitation).

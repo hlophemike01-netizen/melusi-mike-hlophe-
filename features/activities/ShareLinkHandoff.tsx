@@ -16,7 +16,7 @@ import type { OpenedShareRow } from '@/types/database';
  * links are unrecoverable. That is the correct security property, and it means
  * this step must block navigation rather than flash past.
  *
- * SafeCircle cannot send the messages itself — there is no SMS provider — so
+ * Mwhite SafeCircle cannot send the messages itself — there is no SMS provider — so
  * the copy says so plainly instead of implying the contact has been notified.
  */
 export function ShareLinkHandoff({
@@ -43,11 +43,11 @@ export function ShareLinkHandoff({
       <Card className="border-2 border-brand-300 dark:border-brand-700">
         <CardHeader
           title="Send these links now"
-          description="These contacts do not have a SafeCircle account."
+          description="These contacts do not have a Mwhite SafeCircle account."
         />
 
         <InlineNotice tone="caution">
-          Each link is shown <strong>once</strong> and cannot be recovered. SafeCircle does not send
+          Each link is shown <strong>once</strong> and cannot be recovered. Mwhite SafeCircle does not send
           messages on your behalf — send each link yourself.
         </InlineNotice>
 
@@ -66,7 +66,7 @@ export function ShareLinkHandoff({
                   </Button>
                   <a
                     href={`sms:?&body=${encodeURIComponent(
-                      `I'm sharing my SafeCircle activity with you. You can see my location here until it expires: ${url}`,
+                      `I'm sharing my Mwhite SafeCircle activity with you. You can see my location here until it expires: ${url}`,
                     )}`}
                     className="inline-flex min-h-9 items-center rounded-xl border border-subtle px-3 text-sm font-semibold"
                   >

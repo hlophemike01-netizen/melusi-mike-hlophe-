@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0001 — extensions, enums and shared helpers
+-- Mwhite SafeCircle 0001 — extensions, enums and shared helpers
 --
 -- Design note: every geographic column uses PostGIS `geography(Point, 4326)`
 -- so distance maths are metres on the spheroid without per-query casting.

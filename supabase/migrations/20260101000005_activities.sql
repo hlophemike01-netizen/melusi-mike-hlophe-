@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0005 — activities
+-- Mwhite SafeCircle 0005 — activities
 --
 -- An activity is a TEMPORARY, user-initiated safety session. It is the unit of
 -- consent: location may only ever be recorded in the context of an activity

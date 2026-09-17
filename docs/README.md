@@ -1,8 +1,8 @@
-# SafeCircle
+# Mwhite SafeCircle
 
 A consent-first community safety and activity Progressive Web App.
 
-SafeCircle lets people start a **temporary safety activity** — a walk home, a
+Mwhite SafeCircle lets people start a **temporary safety activity** — a walk home, a
 run, a journey — and share it with people they choose, for as long as they
 choose. It is deliberately **not** a people-tracking product, and the
 architecture is built so that it cannot quietly become one.
@@ -11,7 +11,7 @@ architecture is built so that it cannot quietly become one.
 
 ## The product principle
 
-> SafeCircle is not designed to track people. It is designed to let people
+> Mwhite SafeCircle is not designed to track people. It is designed to let people
 > voluntarily create temporary safety activities and share their location
 > selectively.
 
@@ -110,7 +110,7 @@ See [SECURITY.md](./SECURITY.md#the-security-test-suite).
 
 ---
 
-## What SafeCircle does not do
+## What Mwhite SafeCircle does not do
 
 Being explicit about this is part of the product, not a disclaimer bolted on at
 the end.
@@ -122,7 +122,7 @@ the end.
 - **It does not guarantee anyone's safety.** It helps people share their plans
   with people they trust.
 - **It does not track location in the background.** Browsers stop or heavily
-  throttle geolocation once a page is hidden. SafeCircle stops sending rather
+  throttle geolocation once a page is hidden. Mwhite SafeCircle stops sending rather
   than showing a stale point as live. See
   [LOCATION_MODEL.md](./LOCATION_MODEL.md#the-background-location-limitation).
 - **It does not send SMS or make calls.** Contacts without an account receive a

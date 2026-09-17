@@ -13,7 +13,7 @@ import type {
 export interface StartActivityResult {
   activity: ActivityRow;
   checkIn: CheckInRow | null;
-  /** Link tokens for contacts without a SafeCircle account. Shown once. */
+  /** Link tokens for contacts without a Mwhite SafeCircle account. Shown once. */
   shareLinks: OpenedShareRow[];
 }
 

@@ -4,15 +4,18 @@ import { ServiceWorkerRegistration } from '@/components/layout/ServiceWorkerRegi
 
 export const metadata: Metadata = {
   title: {
-    default: 'SafeCircle',
-    template: '%s · SafeCircle',
+    default: 'Mwhite SafeCircle',
+    template: '%s · Mwhite SafeCircle',
   },
   description:
     'Share a walk, run or journey with people you trust — on your terms. Location sharing is optional and always temporary.',
-  applicationName: 'SafeCircle',
+  applicationName: 'Mwhite SafeCircle',
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
+    // iOS home-screen label. Truncated by the launcher at roughly 12
+    // characters, so this carries the distinctive half of the name rather
+    // than rendering as "Mwhite Safe…". Matches manifest short_name.
     title: 'SafeCircle',
     statusBarStyle: 'default',
   },

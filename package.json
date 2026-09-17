@@ -1,8 +1,8 @@
 {
-  "name": "safecircle",
+  "name": "mwhite-safecircle",
   "version": "1.0.0",
   "private": true,
-  "description": "SafeCircle \u2014 a consent-first community safety and activity PWA.",
+  "description": "Mwhite SafeCircle \u2014 a consent-first community safety and activity PWA.",
   "engines": {
     "node": ">=20.9.0"
   },

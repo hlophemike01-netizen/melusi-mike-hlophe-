@@ -1,5 +1,5 @@
 -- ============================================================================
--- SafeCircle 0006 — trusted contacts and location share sessions
+-- Mwhite SafeCircle 0006 — trusted contacts and location share sessions
 --
 -- `emergency_contacts` holds the user's trusted contacts. `trusted_location_
 -- shares` is the *session* record: a time-boxed, revocable grant that is the
@@ -19,7 +19,7 @@ create table public.emergency_contacts (
   relationship text,
   permission_level public.contact_permission_level not null default 'emergency_only',
 
-  -- Set when the contact's phone number matches an existing SafeCircle
+  -- Set when the contact's phone number matches an existing Mwhite SafeCircle
   -- account, which lets them receive shares in-app rather than by link.
   -- Resolved server-side only; never exposed to the contact.
   contact_user_id uuid references public.profiles (id) on delete set null,
@@ -59,7 +59,7 @@ create table public.trusted_location_shares (
   activity_id uuid references public.activities (id) on delete cascade,
   emergency_event_id uuid,
 
-  -- Populated when the contact is itself a SafeCircle account. This is the
+  -- Populated when the contact is itself a Mwhite SafeCircle account. This is the
   -- column RLS matches on.
   recipient_user_id uuid references public.profiles (id) on delete cascade,
 

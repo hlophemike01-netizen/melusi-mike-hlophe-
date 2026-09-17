@@ -128,8 +128,8 @@ export function TrustedContactsPanel({ contacts }: { contacts: EmergencyContactR
         <CardHeader title="How alerts reach your contacts" />
         <p className="text-sm text-secondary">{SAFETY_COPY.contactsAlerted}</p>
         <p className="mt-2 text-sm text-secondary">
-          Contacts with a SafeCircle account see the alert in the app. For everyone else you get a
-          one-time link to send them yourself — SafeCircle does not send SMS or make calls.
+          Contacts with a Mwhite SafeCircle account see the alert in the app. For everyone else you get a
+          one-time link to send them yourself — Mwhite SafeCircle does not send SMS or make calls.
         </p>
       </Card>
 

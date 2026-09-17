@@ -2,7 +2,7 @@
  * Generates the PWA icon set.
  *
  * Writes minimal, valid PNGs with no image library: a solid brand-teal square
- * with a white ring (the "circle" in SafeCircle). Replace these with real
+ * with a white ring (the "circle" in Mwhite SafeCircle). Replace these with real
  * artwork before launch — they exist so the manifest is valid and the app is
  * installable from a fresh clone.
  */

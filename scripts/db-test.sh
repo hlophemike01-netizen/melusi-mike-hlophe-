@@ -22,8 +22,8 @@ if [[ -n "${PGURL:-}" ]]; then
   PSQL=("$PSQL_BIN" "$PGURL")
 else
   PGBIN="${PGBIN:-/usr/lib/postgresql/16/bin}"
-  PGDATA="${PGDATA:-${TMPDIR:-/tmp}/safecircle-pgdata}"
-  PGSOCK="${PGSOCK:-${TMPDIR:-/tmp}/safecircle-pgsock}"
+  PGDATA="${PGDATA:-${TMPDIR:-/tmp}/mwhite-safecircle-pgdata}"
+  PGSOCK="${PGSOCK:-${TMPDIR:-/tmp}/mwhite-safecircle-pgsock}"
   PGPORT="${PGPORT:-55432}"
 
   # PostgreSQL refuses to run as root, so when this script is invoked as root
@@ -57,8 +57,8 @@ else
   fi
 
   PSQL=("$PSQL_BIN" -h "$PGSOCK" -p "$PGPORT" -U postgres)
-  "${PSQL[@]}" -q -c "drop database if exists safecircle_test;" -c "create database safecircle_test;"
-  PSQL=("$PSQL_BIN" -h "$PGSOCK" -p "$PGPORT" -U postgres -d safecircle_test)
+  "${PSQL[@]}" -q -c "drop database if exists mwhite_safecircle_test;" -c "create database mwhite_safecircle_test;"
+  PSQL=("$PSQL_BIN" -h "$PGSOCK" -p "$PGPORT" -U postgres -d mwhite_safecircle_test)
 fi
 
 run() { "${PSQL[@]}" -v ON_ERROR_STOP=1 -q -f "$1"; }

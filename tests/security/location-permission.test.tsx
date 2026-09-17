@@ -1,5 +1,5 @@
 /**
- * The most important behavioural guarantee in the product: SafeCircle must not
+ * The most important behavioural guarantee in the product: Mwhite SafeCircle must not
  * ask the browser for a location until the user takes an action that needs one.
  *
  * These tests fail if a component ever calls getCurrentPosition or watchPosition
