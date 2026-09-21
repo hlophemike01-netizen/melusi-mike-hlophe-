@@ -73,13 +73,13 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
 
   let response = proceed();
 
-  if (!publicEnv.supabaseUrl || !publicEnv.supabaseAnonKey) {
+  if (!publicEnv.supabaseUrl || !publicEnv.supabaseKey) {
     // Without configuration there is no session to refresh. Let the page render
     // its own setup message rather than redirect-looping.
     return response;
   }
 
-  const supabase = createServerClient(publicEnv.supabaseUrl, publicEnv.supabaseAnonKey, {
+  const supabase = createServerClient(publicEnv.supabaseUrl, publicEnv.supabaseKey, {
     cookies: {
       getAll() {
         return request.cookies.getAll();

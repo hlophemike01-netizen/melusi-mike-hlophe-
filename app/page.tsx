@@ -76,7 +76,7 @@ export const metadata: Metadata = {
 
 export default async function LandingPage() {
   // A signed-in visitor goes straight to their dashboard.
-  if (publicEnv.supabaseUrl && publicEnv.supabaseAnonKey) {
+  if (publicEnv.supabaseUrl && publicEnv.supabaseKey) {
     const supabase = await createClient();
     const {
       data: { user },
