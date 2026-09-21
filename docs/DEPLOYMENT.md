@@ -269,12 +269,10 @@ Honest list of what this V1 does not yet include:
    (`npm run icons`). Replace with designed artwork.
 3. **A locale-aware emergency number.** `EmergencyDialog` links `tel:112`, the
    GSM-standard number. Map it to the user's region before launching elsewhere.
-4. **A nonce-based CSP.** `script-src` currently needs `'unsafe-inline'` and
-   `'unsafe-eval'` for Next.js.
-5. **Edge rate limiting** on sign-in and share-token lookups.
-6. **An independent security review.** This codebase has not been penetration
+4. **Edge rate limiting** on sign-in and share-token lookups.
+5. **An independent security review.** This codebase has not been penetration
    tested.
-7. **Legal review** of the privacy explainer against POPIA/GDPR for your
+6. **Legal review** of the privacy explainer against POPIA/GDPR for your
    jurisdiction.
-8. **A native app** if continuous background location is a requirement — see
+7. **A native app** if continuous background location is a requirement — see
    [LOCATION_MODEL.md](./LOCATION_MODEL.md#the-native-path).

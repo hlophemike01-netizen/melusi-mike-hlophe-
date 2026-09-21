@@ -179,6 +179,38 @@ be a lie, so it does not.
 
 ---
 
+## Sending a share link
+
+A share link *is* the permission: anyone holding one can watch a live position
+until it expires. So the route the link travels is part of the privacy model,
+not a UI detail.
+
+Most South African users will send it on WhatsApp, so the app offers that
+directly — but **not** through `https://wa.me/?text=...`. That is a redirect
+hosted by Meta: the browser makes a real HTTPS request to `wa.me` with the
+message in the query string, which would hand a working location token to a
+third party on every single send. For a marketing link that is nothing; here
+the link is the whole secret.
+
+What the app uses instead, in order (`lib/share-message.ts`):
+
+1. **`navigator.share()`** — the operating system's share sheet. WhatsApp
+   appears in it, the text goes straight to the app, and nothing touches a
+   server.
+2. **`whatsapp://send?text=...`** — WhatsApp's own URL scheme. Also local to
+   the device; no request leaves it.
+3. **`sms:`** — the phone's SMS composer, prefilled.
+4. **Copy** — always available, including when the clipboard API is refused.
+
+Every one of these requires the user to press send inside the other app.
+Mwhite SafeCircle has no SMS provider and no WhatsApp Business account, and it
+never delivers a message on its own. The interface says so: after the share
+sheet closes it reports "Handed to the app you chose", never "Sent", because
+the browser does not tell us whether anything was sent and a safety app must
+not leave someone believing a link went out when it did not.
+
+---
+
 ## Regulatory notes
 
 Not legal advice, but the architecture maps onto the common requirements:

@@ -3,6 +3,23 @@ import '@/styles/globals.css';
 import { publicEnv } from '@/lib/env';
 import { ServiceWorkerRegistration } from '@/components/layout/ServiceWorkerRegistration';
 
+/**
+ * Every page renders per request.
+ *
+ * This is not a performance choice, it is what the nonce-based CSP costs.
+ * Next.js can only stamp the per-request nonce onto its bootstrap scripts
+ * while it is rendering that request; a page prerendered at build time gets
+ * no nonce, and `strict-dynamic` then refuses to load a single script on it.
+ * Before this line, /sign-in and /sign-up were served as dead HTML: the form
+ * rendered but nothing was ever wired to it.
+ *
+ * The price is small here. Almost every page in this app is already per-user,
+ * and the two that are not (/legal/privacy, /offline) are a few kilobytes of
+ * text. robots.txt and sitemap.xml are route handlers outside this layout and
+ * stay static.
+ */
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: {
     default: 'Mwhite SafeCircle',

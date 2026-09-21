@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { InlineNotice } from '@/components/ui/States';
 import { publicEnv } from '@/lib/env';
 import { buildShareUrl } from '@/services/share.service';
+import { SendShareLink } from './SendShareLink';
 import type { OpenedShareRow } from '@/types/database';
 
 /**
@@ -18,6 +18,8 @@ import type { OpenedShareRow } from '@/types/database';
  *
  * Mwhite SafeCircle cannot send the messages itself — there is no SMS provider — so
  * the copy says so plainly instead of implying the contact has been notified.
+ * The buttons open WhatsApp, the share sheet or SMS with the text prefilled;
+ * the user presses send.
  */
 export function ShareLinkHandoff({
   shareLinks,
@@ -26,18 +28,6 @@ export function ShareLinkHandoff({
   shareLinks: OpenedShareRow[];
   onContinue: () => void;
 }) {
-  const [copied, setCopied] = useState<Record<string, boolean>>({});
-
-  const copy = async (shareId: string, url: string) => {
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopied((current) => ({ ...current, [shareId]: true }));
-    } catch {
-      // Clipboard access can be refused; the link is on screen to copy by hand.
-      setCopied((current) => ({ ...current, [shareId]: false }));
-    }
-  };
-
   return (
     <div className="space-y-4">
       <Card className="border-2 border-brand-300 dark:border-brand-700">
@@ -60,18 +50,8 @@ export function ShareLinkHandoff({
                 <code className="mt-1 block overflow-x-auto rounded-lg bg-[var(--surface-muted)] p-2.5 text-xs">
                   {url}
                 </code>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <Button size="sm" variant="secondary" onClick={() => void copy(share.share_id, url)}>
-                    {copied[share.share_id] ? 'Copied' : 'Copy link'}
-                  </Button>
-                  <a
-                    href={`sms:?&body=${encodeURIComponent(
-                      `I'm sharing my Mwhite SafeCircle activity with you. You can see my location here until it expires: ${url}`,
-                    )}`}
-                    className="inline-flex min-h-9 items-center rounded-xl border border-subtle px-3 text-sm font-semibold"
-                  >
-                    Open in messages
-                  </a>
+                <div className="mt-2">
+                  <SendShareLink url={url} />
                 </div>
                 <p className="mt-1.5 text-xs text-secondary">
                   Expires {new Date(share.expires_at).toLocaleTimeString()}

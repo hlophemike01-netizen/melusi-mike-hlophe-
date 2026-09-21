@@ -16,6 +16,7 @@ import { useSupabase } from '@/hooks/useSupabase';
 import { endActivity } from '@/services/activity.service';
 import { reissueActivityShares, revokeShare } from '@/services/contacts.service';
 import { buildShareUrl } from '@/services/share.service';
+import { SendShareLink } from './SendShareLink';
 import type { ActivityRow, CheckInRow, OpenedShareRow, TrustedLocationShareRow } from '@/types/database';
 
 /**
@@ -206,6 +207,9 @@ export function LiveActivityPanel({
                   <code className="mt-1 block overflow-x-auto rounded-lg bg-[var(--surface-muted)] p-2 text-xs">
                     {buildShareUrl(publicEnv.siteUrl, share.share_token ?? '')}
                   </code>
+                  <div className="mt-2">
+                    <SendShareLink url={buildShareUrl(publicEnv.siteUrl, share.share_token ?? '')} />
+                  </div>
                 </li>
               ))}
             </ul>

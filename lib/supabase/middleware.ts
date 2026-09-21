@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { buildCsp, generateNonce } from '@/lib/csp';
 import { publicEnv } from '@/lib/env';
 
 /**
@@ -9,6 +10,10 @@ import { publicEnv } from '@/lib/env';
  * Route protection lives here AND in each server component's own session check.
  * Middleware alone is not an authorisation boundary — RLS is — but it gives a
  * clean redirect instead of an empty page.
+ *
+ * It is also where the Content-Security-Policy is attached, because the nonce
+ * has to be minted per request and handed to the renderer before the page is
+ * built.
  */
 const PUBLIC_PREFIXES = [
   '/sign-in',
@@ -36,7 +41,36 @@ function isPublicPath(pathname: string): boolean {
 }
 
 export async function updateSession(request: NextRequest): Promise<NextResponse> {
-  let response = NextResponse.next({ request });
+  const nonce = generateNonce();
+  const csp = buildCsp(nonce, process.env.NODE_ENV !== 'production');
+
+  /**
+   * Next.js reads `Content-Security-Policy` off the *request* headers to find
+   * the nonce it should stamp on its own bootstrap scripts. Without that, the
+   * framework's own inline script is blocked by the policy we just wrote and
+   * the page never hydrates. `x-nonce` is the copy our components read.
+   *
+   * Headers are rebuilt from `request.headers` on every call rather than
+   * captured once, because Supabase mutates the request's cookie header while
+   * refreshing the session and a stale copy would drop the new tokens.
+   */
+  function proceed(): NextResponse {
+    const headers = new Headers(request.headers);
+    headers.set('x-nonce', nonce);
+    headers.set('Content-Security-Policy', csp);
+
+    const res = NextResponse.next({ request: { headers } });
+    res.headers.set('Content-Security-Policy', csp);
+    return res;
+  }
+
+  function redirectTo(url: URL): NextResponse {
+    const res = NextResponse.redirect(url);
+    res.headers.set('Content-Security-Policy', csp);
+    return res;
+  }
+
+  let response = proceed();
 
   if (!publicEnv.supabaseUrl || !publicEnv.supabaseAnonKey) {
     // Without configuration there is no session to refresh. Let the page render
@@ -53,7 +87,7 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
         for (const { name, value } of cookiesToSet) {
           request.cookies.set(name, value);
         }
-        response = NextResponse.next({ request });
+        response = proceed();
         for (const { name, value, options } of cookiesToSet) {
           response.cookies.set(name, value, options);
         }
@@ -73,14 +107,14 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/sign-in';
     redirectUrl.searchParams.set('next', pathname);
-    return NextResponse.redirect(redirectUrl);
+    return redirectTo(redirectUrl);
   }
 
   if (user && (pathname === '/sign-in' || pathname === '/sign-up')) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/home';
     redirectUrl.search = '';
-    return NextResponse.redirect(redirectUrl);
+    return redirectTo(redirectUrl);
   }
 
   return response;

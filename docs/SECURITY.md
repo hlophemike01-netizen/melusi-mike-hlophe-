@@ -160,14 +160,32 @@ check-in sweep — and neither reads a coordinate.
 
 ## HTTP headers
 
-Set in `next.config.ts` for every route:
+The **Content-Security-Policy** is built in `lib/csp.ts` and attached per
+request by the proxy (`lib/supabase/middleware.ts`). It is not in
+`next.config.ts`, because a value there is a constant baked at build time and a
+constant nonce is the same as no nonce.
 
-- **CSP** — `default-src 'self'`; no remote script origins; `connect-src`
-  limited to self, the Supabase project (plus `wss:` for Realtime) and Mapbox;
-  `frame-ancestors 'none'`; `object-src 'none'`; `base-uri 'self'`.
-  `script-src` includes `'unsafe-inline'` and `'unsafe-eval'`, which Next.js
-  requires without a nonce-based setup — worth tightening with a nonce
-  middleware before a high-risk launch.
+- `script-src 'self' 'nonce-<random>' 'strict-dynamic'` — no `'unsafe-inline'`.
+  A fresh 16-byte nonce is minted per request and set on both the request
+  headers (where Next.js reads it to stamp its own bootstrap script) and the
+  response. `'strict-dynamic'` lets that nonced bootstrap load its own chunks
+  and makes the browser ignore host allowlists, so a CDN origin added later
+  cannot quietly reopen the hole. `'unsafe-eval'` is added in development only,
+  for hot reload, and is never sent to a real user.
+- `style-src` keeps `'unsafe-inline'`. Next and Mapbox both inject style tags,
+  and an injected stylesheet cannot read a location or call an API.
+- `default-src 'self'`; `connect-src` limited to self, the Supabase project
+  (plus `wss:` for Realtime) and Mapbox; `frame-ancestors 'none'`;
+  `object-src 'none'`; `base-uri 'self'`; `form-action 'self'`.
+
+**What this costs:** every page renders per request
+(`export const dynamic = 'force-dynamic'` in `app/layout.tsx`). A page
+prerendered at build time receives no nonce, and `strict-dynamic` then refuses
+to load a single script on it — measured before the fix, `/sign-in` produced 14
+CSP violations and a form that was never wired up. Almost every page here is
+already per-user, so the real cost is two pages of static text.
+
+The rest are request-independent and stay in `next.config.ts`:
 - **Permissions-Policy** — `geolocation=(self)`, everything else disabled.
   Geolocation is still gated behind the in-app opt-in before any prompt.
 - **HSTS** — two years, `includeSubDomains`, `preload`.
@@ -201,7 +219,7 @@ most likely place for a home address to end up by accident.
 Applies the **real** migrations to a throwaway PostgreSQL + PostGIS database on
 top of a shim that recreates `auth.uid()` and the three PostgREST roles, then
 runs every assertion as the `authenticated` role — i.e. with exactly what a
-browser client has. 85 assertions, including all five explicitly required
+browser client has. 96 assertions, including all five explicitly required
 properties:
 
 | Required property | Assertion |
@@ -250,18 +268,17 @@ Both are now asserted separately.
 
 Stated plainly rather than buried:
 
-1. **CSP allows `'unsafe-inline'` and `'unsafe-eval'` for scripts.** Next.js
-   requires this without nonce-based middleware. Tighten before a high-risk
-   launch.
-2. **Rate limiting is partial.** Reports are rate-limited in the database.
+1. **Rate limiting is partial.** Reports are rate-limited in the database.
    Authentication attempts rely on Supabase Auth's own limits; add an edge rate
    limiter (e.g. Upstash) for sign-in and share-token lookups before launch.
-3. **Share-link tokens are bearer credentials.** Anyone holding the URL can see
+2. **Share-link tokens are bearer credentials.** Anyone holding the URL can see
    the position until it expires or is revoked. This is inherent to sending a
    link to someone without an account; the mitigations are a short window, a
    hashed-at-rest token, one-time display, `noindex`, and instant revocation.
-4. **No transport for notifications.** Contacts with an account see alerts
-   in-app; everyone else gets a link the user sends themselves. Web Push or an
-   SMS provider is the V2 work.
-5. **No independent security review yet.** This codebase has not been
+3. **Alert delivery depends on the recipient's device.** Contacts with an
+   account get Web Push, which needs an installed PWA on iOS and can be
+   silently disabled by the OS on any platform. Contacts without an account get
+   a link the user sends themselves through WhatsApp, the share sheet or SMS —
+   the app has no SMS provider and never sends anything on its own.
+4. **No independent security review yet.** This codebase has not been
    penetration tested.
