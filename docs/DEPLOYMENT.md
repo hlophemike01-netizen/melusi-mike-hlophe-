@@ -4,6 +4,37 @@ Target: **Vercel** for the app, **Supabase** for the database, auth and realtime
 
 ---
 
+## The short version
+
+Do these in order. Each one blocks the next.
+
+| # | Step | You need | Time |
+| --- | --- | --- | --- |
+| 1 | Buy the domain | A card | 10 min |
+| 2 | Create the Supabase project, enable PostGIS | — | 10 min |
+| 3 | `supabase db push` — apply all 16 migrations | The project ref | 5 min |
+| 4 | Configure Auth: confirm-email on, Site URL, redirect URLs | The domain | 5 min |
+| 5 | Generate `CRON_SECRET` and one VAPID key pair | — | 2 min |
+| 6 | Import to Vercel, **set every env var before the first build** | Steps 1-5 | 15 min |
+| 7 | Point the domain at Vercel | — | 10 min + DNS |
+| 8 | Schedule the background jobs (see below — this is the part people get wrong) | — | 15 min |
+| 9 | Promote your own account to `admin` | A signed-up account | 2 min |
+| 10 | Walk the verification checklist | — | 30 min |
+
+**Two things that will bite you, both discovered the hard way:**
+
+1. **Set the environment variables before the first Vercel build, not after.**
+   The build renders pages, page code constructs a Supabase client, and a
+   missing `NEXT_PUBLIC_SUPABASE_URL` fails the build outright with
+   *"Your project's URL and API key are required"*. It is not a runtime warning.
+2. **Vercel's free plan cannot run this app's schedule.** Hobby allows 2 cron
+   jobs, each **once per day**. This app needs 3 jobs at 5-15 minute intervals.
+   On Hobby, expired locations would sit for up to 24 hours and a missed
+   check-in would escalate a day late — a safety feature silently not working.
+   See *Scheduled jobs* for the free way around it.
+
+---
+
 ## 1. Supabase
 
 ### Create the project
@@ -133,12 +164,65 @@ screen says so rather than letting someone assume otherwise.
 
 ### Scheduled jobs
 
-`vercel.json` registers two crons:
+`vercel.json` registers three crons:
 
 | Path | Schedule | What it does |
 | --- | --- | --- |
 | `/api/cron/purge-locations` | every 15 min | Deletes expired points, closes long-overdue activities, removes dead share grants |
 | `/api/cron/check-ins` | every 5 min | Marks missed check-ins, flips activities to `overdue`, opens escalation shares |
+| `/api/push/dispatch` | every 5 min | Drains the notification outbox and sends the Web Push messages |
+
+**Vercel's free plan will not run these.** Hobby allows 2 cron jobs per
+project, each firing **once per day**. There are 3 here, and two of them are
+retention and escalation guarantees that mean nothing on a daily schedule.
+Either move to Vercel Pro, or use the free path below.
+
+#### The free path: run the first two inside Postgres
+
+`/api/cron/purge-locations` and `/api/cron/check-ins` are thin wrappers — each
+makes exactly one RPC call and returns the count. The work is already a SQL
+function, so it can run in the database itself via `pg_cron`, with no HTTP, no
+`CRON_SECRET`, and no dependence on the web app being up at all. For a
+retention promise that is a better place for it than a serverless function.
+
+In the Supabase SQL editor:
+
+```sql
+create extension if not exists pg_cron with schema extensions;
+
+select cron.schedule(
+  'purge-expired-locations', '*/15 * * * *',
+  $$select public.purge_expired_location_data()$$
+);
+
+select cron.schedule(
+  'sweep-missed-check-ins', '*/5 * * * *',
+  $$select public.sweep_missed_check_ins(5)$$
+);
+
+-- Check they are registered, and later that they are succeeding:
+select jobname, schedule, active from cron.job;
+select jobname, status, start_time
+from cron.job_run_details order by start_time desc limit 20;
+```
+
+Then delete those two entries from `vercel.json`, leaving only
+`/api/push/dispatch` — one cron, inside the Hobby limit of two.
+
+That last one still needs a real schedule, because Hobby would only fire it
+daily and a safety alert a day late is not an alert. It needs Node (the
+`web-push` library signs each message), so it cannot move into Postgres as-is.
+Pick one:
+
+- **Vercel Pro** — keep `vercel.json` as written, nothing else to do.
+- **An external scheduler** — [cron-job.org](https://cron-job.org) or a GitHub
+  Actions workflow on a `schedule:` trigger, calling the endpoint every 5
+  minutes with the `Authorization: Bearer $CRON_SECRET` header. Both are free.
+- **`pg_net` from Supabase** — `cron.schedule` a `net.http_post` to the same
+  endpoint with the same header, keeping everything in one place.
+
+Whichever you choose, confirm it by watching `notification_outbox` drain rather
+than by trusting the schedule.
 
 Both require `Authorization: Bearer $CRON_SECRET`, compared with
 `timingSafeEqual`. Vercel Cron sends this automatically once `CRON_SECRET` is
@@ -169,7 +253,7 @@ modern browser.
 ## 4. Verify the deployment
 
 ```bash
-npm run verify      # typecheck, lint, 138 tests
+npm run verify      # typecheck, lint, 208 tests
 npm run test:db     # the SQL security suite (needs PostgreSQL + PostGIS locally)
 npm run build
 ```
