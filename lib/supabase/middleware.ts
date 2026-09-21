@@ -27,6 +27,7 @@ const PUBLIC_PREFIXES = [
   '/sw.js',
   '/icons',
   '/offline',
+  '/ui-preview', // dev-only interface harness; returns 404 in production
   // Crawler files. Without these the proxy redirects Googlebot to /sign-in and
   // the site cannot be indexed at all — the redirect is a 307, so the crawler
   // sees an auth wall rather than a sitemap.
