@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { SAFETY_COPY } from '@/lib/constants';
@@ -26,6 +27,52 @@ const PROMISES = [
     body: 'The community map shows how many people are active in an area, rounded to about 1km. It never shows where an individual is.',
   },
 ];
+
+/**
+ * The landing page is one of only two pages that may be indexed (the other is
+ * the privacy explainer). Everything else inherits noindex from the root
+ * layout.
+ *
+ * The copy deliberately does not promise that you can "track" anyone: the
+ * product cannot do that. The person sharing has to start an activity and
+ * choose who sees it. Promising otherwise would attract people expecting a
+ * covert tracker and disappoint every one of them.
+ */
+export const metadata: Metadata = {
+  title: 'Mwhite SafeCircle — share your journey with people you trust',
+  description:
+    'Let the people you trust know you got there safely. Start a walk, run or journey, choose exactly who can see you, and sharing ends when you do. Location sharing is always optional.',
+  alternates: { canonical: '/' },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
+  },
+  keywords: [
+    'personal safety app',
+    'share location with family',
+    'safe walk home',
+    'running safety',
+    'check in when I get home',
+    'South Africa',
+  ],
+  openGraph: {
+    type: 'website',
+    locale: 'en_ZA',
+    siteName: 'Mwhite SafeCircle',
+    title: 'Mwhite SafeCircle — share your journey with people you trust',
+    description:
+      'Start a walk, run or journey and share it with the people you choose, for as long as you choose. Sharing is off until you turn it on.',
+    url: '/',
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Mwhite SafeCircle' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Mwhite SafeCircle',
+    description: 'Share your journey with people you trust. Sharing is off until you turn it on.',
+    images: ['/og.png'],
+  },
+};
 
 export default async function LandingPage() {
   // A signed-in visitor goes straight to their dashboard.

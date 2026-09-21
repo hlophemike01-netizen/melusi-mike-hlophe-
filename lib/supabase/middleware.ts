@@ -22,6 +22,12 @@ const PUBLIC_PREFIXES = [
   '/sw.js',
   '/icons',
   '/offline',
+  // Crawler files. Without these the proxy redirects Googlebot to /sign-in and
+  // the site cannot be indexed at all — the redirect is a 307, so the crawler
+  // sees an auth wall rather than a sitemap.
+  '/robots.txt',
+  '/sitemap.xml',
+  '/og.png',
 ];
 
 function isPublicPath(pathname: string): boolean {

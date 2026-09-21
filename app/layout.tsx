@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import '@/styles/globals.css';
+import { publicEnv } from '@/lib/env';
 import { ServiceWorkerRegistration } from '@/components/layout/ServiceWorkerRegistration';
 
 export const metadata: Metadata = {
@@ -27,8 +28,13 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: '/icons/icon-192.png', sizes: '192x192' }],
   },
-  // A safety tool has no reason to appear in search results, and a public
-  // profile page indexed by a crawler is a privacy problem.
+  // Resolves relative Open Graph image paths and canonical URLs.
+  metadataBase: new URL(publicEnv.siteUrl),
+
+  // noindex is the DEFAULT for the whole app: a signed-in page, a group roster
+  // or a share link has no business in a search index. The two genuinely
+  // public pages — the landing page and the privacy explainer — opt back in
+  // individually via their own `metadata` export.
   robots: { index: false, follow: false },
 };
 

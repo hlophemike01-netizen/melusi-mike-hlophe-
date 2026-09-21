@@ -3,7 +3,18 @@ import Link from 'next/link';
 import { SAFETY_COPY } from '@/lib/constants';
 import { K_ANONYMITY_THRESHOLD } from '@/lib/geo';
 
-export const metadata: Metadata = { title: 'How we handle your location' };
+/**
+ * Public on purpose. Someone deciding whether to trust this with their
+ * location should be able to read exactly what it does before signing up —
+ * and search engines should be able to show them this page.
+ */
+export const metadata: Metadata = {
+  title: 'How Mwhite SafeCircle handles your location',
+  description:
+    'Exactly what location data Mwhite SafeCircle collects, who can see it, how long it is kept, and the controls you have. Location sharing is off by default.',
+  alternates: { canonical: '/legal/privacy' },
+  robots: { index: true, follow: true },
+};
 
 /**
  * User-facing privacy explanation.

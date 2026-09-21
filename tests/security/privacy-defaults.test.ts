@@ -194,3 +194,51 @@ describe('scheduled jobs are unreachable from a browser session', () => {
     );
   });
 });
+
+describe('only the two public pages may be indexed', () => {
+  const read = (p: string) => readFileSync(join(process.cwd(), p), 'utf8');
+
+  it('the root layout still defaults the whole app to noindex', () => {
+    expect(read('app/layout.tsx')).toMatch(/robots:\s*\{\s*index:\s*false,\s*follow:\s*false\s*\}/);
+  });
+
+  it('exactly two pages opt back in', () => {
+    expect(read('app/page.tsx')).toMatch(/index:\s*true/);
+    expect(read('app/legal/privacy/page.tsx')).toMatch(/index:\s*true/);
+  });
+
+  it('no signed-in page opts back in', () => {
+    for (const page of [
+      'app/(app)/home/page.tsx',
+      'app/(app)/map/page.tsx',
+      'app/(app)/profile/page.tsx',
+      'app/(admin)/admin/page.tsx',
+      'app/shared/[token]/page.tsx',
+    ]) {
+      expect(read(page), `${page} must not be indexable`).not.toMatch(/index:\s*true/);
+    }
+  });
+
+  it('robots.txt disallows every authenticated area and the share links', () => {
+    const robots = read('app/robots.ts');
+    for (const path of ['/home', '/map', '/groups', '/activity', '/profile', '/admin', '/shared/', '/api/']) {
+      expect(robots).toContain(`'${path}'`);
+    }
+  });
+
+  it('the sitemap lists only the two public pages', () => {
+    const sitemap = read('app/sitemap.ts');
+    expect(sitemap).toMatch(/\$\{base\}\/`/);
+    expect(sitemap).toContain('/legal/privacy');
+    for (const path of ['/home', '/admin', '/shared']) {
+      expect(sitemap).not.toContain(path);
+    }
+  });
+
+  it('the auth proxy lets crawlers reach robots.txt and the sitemap', () => {
+    // Without this the proxy 307s Googlebot to /sign-in and nothing is indexed.
+    const middleware = read('lib/supabase/middleware.ts');
+    expect(middleware).toContain("'/robots.txt'");
+    expect(middleware).toContain("'/sitemap.xml'");
+  });
+});
