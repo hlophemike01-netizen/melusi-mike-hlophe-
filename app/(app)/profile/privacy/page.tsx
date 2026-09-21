@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { AppHeader } from '@/components/layout/AppHeader';
+import { AlertSettings } from '@/features/notifications/AlertSettings';
 import { PrivacySettings } from '@/features/privacy/PrivacySettings';
 import { createClient } from '@/lib/supabase/server';
 import { listActiveShares } from '@/services/contacts.service';
@@ -20,6 +21,7 @@ export default async function PrivacyPage() {
     <div className="space-y-4">
       <AppHeader title="Privacy & location" backHref="/profile" />
       <PrivacySettings profile={profile} activeShareCount={shares.length} />
+      <AlertSettings />
     </div>
   );
 }

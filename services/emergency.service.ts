@@ -77,6 +77,11 @@ export async function activateEmergency(
 
   const shareLinks = await openEmergencyShares(db, event.id);
 
+  // Queue push alerts, then ask the server to send them now rather than on the
+  // next five-minute sweep. Waiting that long to tell someone you are in
+  // trouble is not acceptable, so the delay is worth the extra round trip.
+  await notifyContactsNow(db, 'emergency_raised', event.id);
+
   const { data: counted } = await db
     .from('emergency_events')
     .update({ contacts_notified_count: shareLinks.length })
@@ -90,6 +95,26 @@ export async function activateEmergency(
     shareLinks,
     emergencyServicesContacted: false,
   };
+}
+
+/**
+ * Queues alerts for the caller's trusted contacts and nudges the dispatcher.
+ *
+ * Deliberately never throws: an emergency must not fail because a push service
+ * was slow. The share links and the in-app state are the alert that matters;
+ * push is the thing that makes someone look.
+ */
+async function notifyContactsNow(
+  db: Db,
+  kind: 'emergency_raised' | 'emergency_resolved',
+  eventId: string,
+): Promise<void> {
+  try {
+    await db.rpc('notify_my_contacts', { p_kind: kind, p_emergency_event_id: eventId });
+    await fetch('/api/push/dispatch', { method: 'POST', keepalive: true });
+  } catch {
+    // The scheduled dispatcher picks the queued rows up within five minutes.
+  }
 }
 
 async function openEmergencyShares(db: Db, eventId: string): Promise<OpenedShareRow[]> {
@@ -152,6 +177,10 @@ export async function resolveEmergency(
       .update({ status: 'active' })
       .eq('id', event.activity_id)
       .eq('status', 'emergency');
+  }
+
+  if (status === 'resolved_safe') {
+    await notifyContactsNow(db, 'emergency_resolved', eventId);
   }
 
   return event;

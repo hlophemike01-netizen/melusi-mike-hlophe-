@@ -221,8 +221,8 @@ npm run dev</code></pre>
   </div>
 
   <h2>Verifying the build</h2>
-  <pre><code>npm run verify      <span class="comment"># typecheck + lint + 160 tests</span>
-npm run test:db     <span class="comment"># 85 SQL security assertions (needs PostgreSQL + PostGIS)</span>
+  <pre><code>npm run verify      <span class="comment"># typecheck + lint + 181 tests</span>
+npm run test:db     <span class="comment"># 96 SQL security assertions (needs PostgreSQL + PostGIS)</span>
 npm run verify:all  <span class="comment"># both</span></code></pre>
 
   <table>
@@ -233,13 +233,13 @@ npm run verify:all  <span class="comment"># both</span></code></pre>
     <tbody>
       <tr>
         <td><code>tests/db</code></td>
-        <td class="num">85</td>
+        <td class="num">96</td>
         <td>Runs the real migrations on PostgreSQL + PostGIS and asserts as an ordinary signed-in user that a stranger, a non-member, an expired share and an administrator all fail to read a precise coordinate.</td>
       </tr>
       <tr>
         <td><code>tests/security</code></td>
-        <td class="num">81</td>
-        <td>Mounting the geolocation hook never prompts; no client component reaches a privileged module; the location policy has no admin escape hatch.</td>
+        <td class="num">102</td>
+        <td>Mounting the geolocation or push hook never prompts; no client component reaches a privileged module; the location policy has no admin escape hatch; no alert can carry a location.</td>
       </tr>
       <tr>
         <td><code>tests/unit</code></td>
@@ -259,16 +259,16 @@ npm run verify:all  <span class="comment"># both</span></code></pre>
       they trust.</li>
       <li><strong>It does not track location in the background.</strong> Browsers throttle geolocation once a page
       is hidden, so the app stops sending rather than showing a stale point as live.</li>
-      <li><strong>It does not send SMS or make calls.</strong> Contacts without an account get a link the user
-      sends themselves.</li>
+      <li><strong>It does not send SMS or make calls.</strong> Contacts with an account get a push
+      alert; anyone else gets a link the user sends themselves.</li>
       <li><strong>It has no user directory.</strong> There is deliberately no way to search for a person.</li>
     </ul>
   </div>
 
   <h2>Before a public launch</h2>
   <ul class="plain">
-    <li>A notification transport — Web Push or an SMS provider. This is what makes missed check-in escalation
-    genuinely useful.</li>
+    <li>An SMS provider, to reach trusted contacts who have no account. Web Push already covers those
+    who do.</li>
     <li>Real icons. <code>public/icons/*</code> are generated placeholders (<code>npm run icons</code>).</li>
     <li>A locale-aware emergency number; the dialog currently links <code>tel:112</code>.</li>
     <li>A nonce-based CSP, edge rate limiting on sign-in, and an independent security review.</li>

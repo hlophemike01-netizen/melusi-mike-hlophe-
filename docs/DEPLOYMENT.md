@@ -94,12 +94,37 @@ Settings → Environment Variables.
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | all | no |
 | `SUPABASE_SERVICE_ROLE_KEY` | production, preview | **yes** |
 | `CRON_SECRET` | production, preview | **yes** |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | all | no |
+| `VAPID_PRIVATE_KEY` | production, preview | **yes** |
+| `VAPID_SUBJECT` | all | no |
 
 Generate the cron secret with:
 
 ```bash
 openssl rand -hex 32
 ```
+
+### Web Push
+
+Generate one VAPID key pair and keep it — rotating it unsubscribes every device
+that has already opted in.
+
+```bash
+npx web-push generate-vapid-keys
+```
+
+Set `NEXT_PUBLIC_VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY` from the output, and
+`VAPID_SUBJECT` to a contact a push service can use to reach you
+(`mailto:you@example.co.za`).
+
+Without these the app runs normally and alerts stay in-app — but a missed
+check-in then reaches nobody who is not already looking at the screen, which is
+the whole point of the feature. Treat them as required for production.
+
+**What to expect per platform.** Push works on Android and on desktop browsers.
+On iPhone it works only once the user has added SafeCircle to their home screen
+(iOS 16.4+); Safari in an ordinary tab cannot receive it. The alert settings
+screen says so rather than letting someone assume otherwise.
 
 > `NEXT_PUBLIC_*` values are compiled into the browser bundle. Putting a secret
 > behind that prefix publishes it. `tests/security/secret-handling.test.ts`
@@ -236,10 +261,10 @@ If the service-role key is exposed:
 
 Honest list of what this V1 does not yet include:
 
-1. **A notification transport.** Contacts with an account see alerts in-app;
-   everyone else gets a link the user sends themselves. Web Push, or an SMS
-   provider, is the main V2 work — and the one that makes missed-check-in
-   escalation genuinely useful.
+1. **Reaching contacts without an account.** Web Push now covers contacts who
+   have a SafeCircle account and have enabled alerts on a device. Anyone else
+   still gets a link the user sends by hand, and iPhone users must install the
+   app first. An SMS provider is what would close that last gap.
 2. **Real icons.** `public/icons/*` are generated placeholders
    (`npm run icons`). Replace with designed artwork.
 3. **A locale-aware emergency number.** `EmergencyDialog` links `tel:112`, the

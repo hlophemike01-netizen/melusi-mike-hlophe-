@@ -8,6 +8,10 @@
     {
       "path": "/api/cron/check-ins",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/push/dispatch",
+      "schedule": "*/5 * * * *"
     }
   ]
 }

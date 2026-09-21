@@ -656,3 +656,88 @@ end $$;
 reset role;
 \echo ''
 \echo '===================== ALL DATABASE SECURITY TESTS PASSED ============'
+
+\echo '== Push notifications =============================================='
+
+reset role; select test.act_as('11111111-1111-1111-1111-111111111111'); set role authenticated;
+insert into public.push_subscriptions (user_id, endpoint, p256dh, auth)
+values ('11111111-1111-1111-1111-111111111111', 'https://fcm.googleapis.com/fcm/send/alice-device', 'k1', 'a1');
+
+do $$ begin
+  perform test.assert(
+    (select count(*) from public.push_subscriptions) = 1,
+    'a user can register their own push subscription');
+end $$;
+
+-- A client cannot register a subscription on someone else's account: the
+-- trigger derives the owner from the session, so the forged id is overwritten.
+insert into public.push_subscriptions (user_id, endpoint, p256dh, auth)
+values ('22222222-2222-2222-2222-222222222222', 'https://fcm.googleapis.com/fcm/send/forged', 'k2', 'a2');
+
+do $$ begin
+  perform test.assert(
+    (select user_id from public.push_subscriptions
+     where endpoint like '%forged') = '11111111-1111-1111-1111-111111111111',
+    'a forged owner on a push subscription is overwritten with the session user');
+end $$;
+
+reset role; select test.act_as('22222222-2222-2222-2222-222222222222'); set role authenticated;
+do $$ begin
+  perform test.assert(
+    (select count(*) from public.push_subscriptions) = 0,
+    'push subscriptions are invisible to everyone but their owner');
+  perform test.assert_raises(
+    $q$ select count(*) from public.notification_outbox $q$,
+    'the outbox is unreadable by a signed-in user', 'permission denied');
+  perform test.assert_raises(
+    $q$ select public.queue_contact_notifications(
+          '11111111-1111-1111-1111-111111111111', 'emergency_raised') $q$,
+    'a user cannot queue alerts about somebody else', 'permission denied');
+  perform test.assert_raises(
+    $q$ select public.notify_my_contacts('check_in_missed') $q$,
+    'notify_my_contacts refuses a kind the caller should not raise', 'not_authorised');
+end $$;
+
+-- Alice alerting her own contacts is allowed, and reaches exactly Carol.
+reset role; select test.act_as('11111111-1111-1111-1111-111111111111'); set role authenticated;
+do $$
+declare queued integer;
+begin
+  select public.notify_my_contacts('emergency_raised') into queued;
+  perform test.assert(queued = 1, 'an emergency alerts the one contact with an account');
+end $$;
+
+reset role;
+do $$
+declare row_payload jsonb;
+begin
+  select payload into row_payload from public.notification_outbox limit 1;
+  perform test.assert(
+    (select recipient_user_id from public.notification_outbox limit 1)
+      = '33333333-3333-3333-3333-333333333333',
+    'the alert is addressed to the trusted contact, not the sender');
+  perform test.assert(
+    row_payload ? 'name' and not (row_payload ?| array['latitude','longitude','token']),
+    'the payload carries a name and no location or token');
+  perform test.assert_raises(
+    $q$ insert into public.notification_outbox (recipient_user_id, kind, payload)
+        values ('33333333-3333-3333-3333-333333333333', 'emergency_raised',
+                '{"latitude": -33.9, "longitude": 18.4}'::jsonb) $q$,
+    'the schema refuses a payload containing a location', 'no_location');
+end $$;
+
+-- Blocking stops alerts the same way it stops location.
+select test.act_as('11111111-1111-1111-1111-111111111111'); set role authenticated;
+insert into public.user_blocks (blocker_id, blocked_id)
+values ('11111111-1111-1111-1111-111111111111', '33333333-3333-3333-3333-333333333333');
+
+do $$
+declare queued integer;
+begin
+  select public.notify_my_contacts('emergency_raised') into queued;
+  perform test.assert(queued = 0, 'a blocked contact receives no alert');
+end $$;
+
+reset role; delete from public.user_blocks
+where blocker_id = '11111111-1111-1111-1111-111111111111'
+  and blocked_id = '33333333-3333-3333-3333-333333333333';

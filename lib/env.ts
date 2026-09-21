@@ -28,6 +28,9 @@ export const publicEnv = {
   mapboxToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '',
   mapboxStyle: process.env.NEXT_PUBLIC_MAPBOX_STYLE ?? 'mapbox://styles/mapbox/light-v11',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+  // The VAPID *public* key. Public by design: the browser needs it to
+  // subscribe, and it only identifies the sender.
+  vapidPublicKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? '',
 } as const;
 
 export function assertPublicEnv(): void {
@@ -51,6 +54,8 @@ export function serverEnv() {
   return {
     supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
     cronSecret: process.env.CRON_SECRET ?? '',
+    vapidPrivateKey: process.env.VAPID_PRIVATE_KEY ?? '',
+    vapidSubject: process.env.VAPID_SUBJECT ?? '',
   };
 }
 
@@ -60,4 +65,20 @@ export function requireServiceRoleKey(): string {
 
 export function requireCronSecret(): string {
   return required('CRON_SECRET', serverEnv().cronSecret);
+}
+
+/** True when push is configured. The app works without it; alerts just stay in-app. */
+export function hasPushConfigured(): boolean {
+  return publicEnv.vapidPublicKey.length > 0;
+}
+
+export function requireVapid(): { publicKey: string; privateKey: string; subject: string } {
+  const { vapidPrivateKey, vapidSubject } = serverEnv();
+  return {
+    publicKey: required('NEXT_PUBLIC_VAPID_PUBLIC_KEY', publicEnv.vapidPublicKey),
+    privateKey: required('VAPID_PRIVATE_KEY', vapidPrivateKey),
+    // web-push requires a contact URL or mailto: so a push service can reach
+    // the operator about a misbehaving sender.
+    subject: required('VAPID_SUBJECT', vapidSubject),
+  };
 }

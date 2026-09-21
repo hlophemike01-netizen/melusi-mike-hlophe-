@@ -15,7 +15,7 @@
  *     geolocation at all; see docs/LOCATION_MODEL.md.
  */
 
-const VERSION = 'mwhite-safecircle-v1';
+const VERSION = 'mwhite-safecircle-v2';
 const SHELL_CACHE = `${VERSION}-shell`;
 const OFFLINE_URL = '/offline';
 
@@ -91,4 +91,72 @@ self.addEventListener('fetch', (event) => {
       }),
     );
   }
+});
+
+/**
+ * Push notifications.
+ *
+ * The payload is sealed to this browser's own keys, so the push service that
+ * relayed it could not read it. It still carries only a name and what
+ * happened — never a location, never a share token. See the CHECK constraint
+ * on notification_outbox.
+ *
+ * Nothing here claims emergency services were contacted, because they were
+ * not. The wording has to survive being read on a lock screen at 2am.
+ */
+self.addEventListener('push', (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = {};
+  }
+
+  const name = typeof data.name === 'string' ? data.name : 'Someone';
+  const kind = data.kind;
+
+  let title = 'Mwhite SafeCircle';
+  let body = name + ' needs your attention.';
+  let url = '/home';
+
+  if (kind === 'emergency_raised') {
+    title = name + ' activated emergency mode';
+    body = 'They asked SafeCircle to alert you. Emergency services have NOT been contacted.';
+    url = '/home';
+  } else if (kind === 'check_in_missed') {
+    title = name + ' missed a safety check-in';
+    body = 'They did not respond when their timer ran out. You can see their location.';
+    url = '/home';
+  } else if (kind === 'emergency_resolved') {
+    title = name + ' is safe';
+    body = 'They marked their emergency as resolved.';
+    url = '/home';
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body,
+      icon: '/icons/icon-192.png',
+      badge: '/icons/icon-192.png',
+      /* an emergency should not be silently stacked under an older alert */
+      tag: kind === 'emergency_raised' ? 'emergency' : 'safecircle',
+      renotify: kind === 'emergency_raised',
+      requireInteraction: kind === 'emergency_raised',
+      data: { url },
+    }),
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const target = (event.notification.data && event.notification.data.url) || '/home';
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windows) => {
+      for (const client of windows) {
+        if (client.url.includes(target) && 'focus' in client) return client.focus();
+      }
+      return self.clients.openWindow(target);
+    }),
+  );
 });
