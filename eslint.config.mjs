@@ -13,7 +13,18 @@ import nextTypescript from 'eslint-config-next/typescript';
  */
 const config = [
   {
-    ignores: ['.next/**', 'node_modules/**', 'public/sw.js', 'next-env.d.ts', 'coverage/**'],
+    // `.netlify/` holds build output — including vendored Deno sources the
+    // Netlify plugin writes for the edge runtime. Linting somebody else's
+    // bundled dependencies produces thousands of findings and tells us nothing
+    // about this codebase.
+    ignores: [
+      '.next/**',
+      '.netlify/**',
+      'node_modules/**',
+      'public/sw.js',
+      'next-env.d.ts',
+      'coverage/**',
+    ],
   },
   ...nextCoreWebVitals,
   ...nextTypescript,

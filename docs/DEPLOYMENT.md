@@ -15,8 +15,8 @@ Do these in order. Each one blocks the next.
 | 3 | `supabase db push` — apply all 16 migrations | The project ref | 5 min |
 | 4 | Configure Auth: confirm-email on, Site URL, redirect URLs | The domain | 5 min |
 | 5 | Generate `CRON_SECRET` and one VAPID key pair | — | 2 min |
-| 6 | Import to Vercel, **set every env var before the first build** | Steps 1-5 | 15 min |
-| 7 | Point the domain at Vercel | — | 10 min + DNS |
+| 6 | Import to Vercel **or Netlify**, set every env var **before the first build** | Steps 1-5 | 15 min |
+| 7 | Point the domain at your host | — | 10 min + DNS |
 | 8 | Schedule the background jobs (see below — this is the part people get wrong) | — | 15 min |
 | 9 | Promote your own account to `admin` | A signed-up account | 2 min |
 | 10 | Walk the verification checklist | — | 30 min |
@@ -110,7 +110,7 @@ aggregate counts.
 
 ---
 
-## 3. Vercel
+## 3a. Vercel
 
 ### Import and configure
 
@@ -241,10 +241,79 @@ curl -X POST https://<your-domain>/api/cron/purge-locations \
   -H "Authorization: Bearer $CRON_SECRET"
 ```
 
-### HTTPS
+---
 
-Vercel provides TLS automatically. The app assumes HTTPS throughout: the service
-worker refuses to register on anything but `https:` or `localhost`, secure
+## 3b. Netlify
+
+`netlify.toml` and `netlify/functions/` are committed, so this works out of the
+box: connect the repository in the Netlify UI and it builds.
+
+**This app cannot be a static site.** Every page renders per request (the CSP
+nonce requires it), the proxy refreshes the Supabase session on every request,
+and there are API routes. `@netlify/plugin-nextjs` turns all of that into
+Netlify Functions and Edge Functions. Without it the build produces nothing
+servable, and `next export` fails outright — there is no `index.html` to drag
+and drop.
+
+### Environment variables
+
+The same table as Vercel, under Site configuration → Environment variables.
+Set them **before the first build**: page code constructs a Supabase client
+while prerendering, so a missing `NEXT_PUBLIC_SUPABASE_URL` fails the build
+with *"Your project's URL and API key are required"* rather than warning at
+runtime.
+
+`NEXT_PUBLIC_SITE_URL` must be the final public URL — it is baked into every
+share link you generate. Netlify also injects `URL` automatically, which the
+scheduled function falls back to.
+
+### Scheduled jobs
+
+**`vercel.json` is inert on Netlify.** Netlify has no equivalent of Vercel
+Cron, so those three entries do nothing here and the jobs are split instead:
+
+| Job | Where it runs |
+| --- | --- |
+| Expired-location purge | `pg_cron`, every 15 min |
+| Missed check-in sweep | `pg_cron`, every 5 min |
+| Alert outbox drain | `netlify/functions/push-dispatch.mts`, every 5 min |
+
+Run the `pg_cron` SQL from *Scheduled jobs* above — it is the same on either
+host, and it is the better home for those two regardless: they are single SQL
+calls, so in the database they cannot be broken by a bad deploy or a cold
+start, and a retention promise should not depend on the web tier being up.
+
+The third needs Node, because `web-push` signs each message. The committed
+scheduled function calls the app's own `/api/push/dispatch` with the
+`CRON_SECRET` header, so there is one implementation of the sending path. It
+fails loudly if `CRON_SECRET` or the site URL is missing — a scheduled job that
+quietly does nothing is worse than one that errors, because the alerts it was
+meant to send simply never arrive.
+
+Confirm it by watching `notification_outbox` drain, not by trusting the
+schedule. Check Netlify's current plan limits for scheduled functions before
+relying on a 5-minute interval.
+
+### What was verified here, and what was not
+
+A real `netlify build` was run against this repository. The Next.js build
+compiled, the config resolved (publish directory, plugin, functions directory,
+headers, redirects), and **Functions bundling succeeded** — the scheduled
+function bundles.
+
+**Edge Functions bundling was not verified.** It needs to download the Deno
+runtime from `dl.deno.land`, which the development sandbox blocks (HTTP 403).
+That is an environment limit, not a configuration fault, and it should succeed
+on Netlify's builders — but it is the one step of this deployment path that has
+not actually been executed, so watch the first build's log for it.
+
+---
+
+## HTTPS
+
+Vercel and Netlify both provision TLS automatically. The app assumes HTTPS
+throughout: the service worker refuses to register on anything but `https:` or
+`localhost`, secure
 cookies require it, and geolocation is unavailable on insecure origins in every
 modern browser.
 

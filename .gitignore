@@ -8,6 +8,7 @@ coverage/
 
 # next.js
 .next/
+.netlify/
 out/
 next-env.d.ts
 
