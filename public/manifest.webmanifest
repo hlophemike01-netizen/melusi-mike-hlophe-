@@ -1,0 +1,45 @@
+{
+  "name": "Mwhite SafeCircle",
+  "short_name": "SafeCircle",
+  "description": "Share a walk, run or journey with people you trust — on your terms.",
+  "start_url": "/home",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f7f7f6",
+  "theme_color": "#1f7b78",
+  "categories": ["health", "lifestyle", "social"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Start a safe activity",
+      "short_name": "Start activity",
+      "url": "/activity/start",
+      "description": "Begin a walk, run or journey and choose who can see you."
+    },
+    {
+      "name": "Community map",
+      "short_name": "Map",
+      "url": "/map"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    name: Typecheck, lint, tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+        env:
+          # Build-time placeholders. No real project is contacted.
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+
+      - name: Assert no server secret reached the client bundle
+        run: |
+          if grep -rq "SUPABASE_SERVICE_ROLE_KEY\|CRON_SECRET" .next/static/; then
+            echo "::error::A server-only secret name appears in the client bundle"
+            exit 1
+          fi
+          echo "Client bundle is clean."
+
+  database:
+    name: Database security suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PostgreSQL with PostGIS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-16 postgresql-16-postgis-3
+
+      - name: Run the SQL security suite
+        run: |
+          export PGBIN=/usr/lib/postgresql/16/bin
+          export PGDATA="$RUNNER_TEMP/pgdata"
+          export PGSOCK="$RUNNER_TEMP/pgsock"
+          chmod -R a+rwx "$RUNNER_TEMP"
+          bash scripts/db-test.sh

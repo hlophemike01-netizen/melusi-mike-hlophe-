@@ -1,0 +1,32 @@
+# ---------------------------------------------------------------------------
+# Netlify deployment for Mwhite SafeCircle.
+#
+# This app cannot be a static site. Every page renders per request (the CSP
+# nonce requires it), the proxy refreshes the Supabase session on every
+# request, and there are API routes. @netlify/plugin-nextjs is what turns all
+# of that into Netlify Functions and Edge Functions — without it the build
+# produces nothing servable.
+# ---------------------------------------------------------------------------
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Netlify's default Node is older than this project needs.
+  NODE_VERSION = "22"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# The scheduled function in netlify/functions/ drains the alert outbox. The two
+# other background jobs (expired-location purge, missed check-in sweep) are
+# single SQL calls and belong in the database via pg_cron — see
+# docs/DEPLOYMENT.md. Putting them here would make a privacy guarantee depend
+# on the web tier being up.
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Service-Worker-Allowed = "/"

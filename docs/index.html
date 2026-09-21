@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mwhite SafeCircle — documentation index</title>
+<meta name="description" content="Entry point to the Mwhite SafeCircle codebase: architecture, database, security, privacy and the location model.">
+<meta name="robots" content="noindex">
+<style>
+  /* Palette lifted from styles/globals.css so this page and the app agree. */
+  :root {
+    --brand-600: #1f7b78;
+    --brand-700: #1d6261;
+    --brand-800: #1c4e4e;
+    --brand-50:  #eefaf8;
+    --ink-900: #24221f;
+    --ink-600: #666159;
+    --ink-200: #dcdad6;
+    --ink-50:  #f7f7f6;
+    --safe-600: #237a48;
+    --safe-50:  #eaf7ef;
+    --caution-500: #c67c14;
+    --caution-50:  #fdf3e3;
+    --alert-700: #a12a22;
+    --alert-50:  #fdeceb;
+
+    --surface: #ffffff;
+    --page: var(--ink-50);
+    --text: var(--ink-900);
+    --muted: var(--ink-600);
+    --border: var(--ink-200);
+    --accent: var(--brand-700);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --page: #171917;
+      --surface: #232723;
+      --text: #f2f1ee;
+      --muted: #b3afa6;
+      --border: #343834;
+      --accent: #74d1c8;
+      --brand-50: rgba(31, 123, 120, 0.18);
+      --safe-50: rgba(35, 122, 72, 0.18);
+      --caution-50: rgba(198, 124, 20, 0.16);
+      --alert-50: rgba(194, 53, 43, 0.16);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 40px 20px 72px; }
+
+  a { color: var(--accent); }
+  a:hover { color: var(--brand-800); }
+  @media (prefers-color-scheme: dark) { a:hover { color: #a9e5de; } }
+
+  :focus-visible { outline: 3px solid var(--brand-600); outline-offset: 2px; border-radius: 4px; }
+
+  header.masthead { display: flex; align-items: center; gap: 14px; }
+  .mark {
+    width: 46px; height: 46px; flex-shrink: 0; border-radius: 999px;
+    background: var(--brand-600); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; line-height: 1;
+  }
+  h1 { margin: 0; font-size: 30px; letter-spacing: -0.02em; }
+  .tagline { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
+
+  h2 {
+    margin: 48px 0 6px; font-size: 13px; font-weight: 700;
+    letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
+  }
+  h3 { margin: 0; font-size: 17px; }
+
+  .lede {
+    margin: 24px 0 0; padding: 18px 20px;
+    background: var(--brand-50); border: 1px solid var(--border);
+    border-radius: 14px; font-size: 15.5px;
+  }
+  .lede p { margin: 0; }
+  .lede p + p { margin-top: 10px; }
+
+  .grid { display: grid; gap: 14px; margin-top: 14px; }
+  @media (min-width: 720px) { .grid.two { grid-template-columns: 1fr 1fr; } }
+
+  .card {
+    display: block; padding: 18px 20px; text-decoration: none; color: inherit;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    transition: border-color 120ms ease;
+  }
+  a.card:hover { border-color: var(--brand-600); }
+  .card p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+  .card .path { display: block; margin-top: 10px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--muted); }
+
+  figure { margin: 18px 0 0; }
+  figure img {
+    display: block; width: 100%; height: auto;
+    background: #ffffff; border: 1px solid var(--border); border-radius: 14px;
+  }
+  figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted); }
+
+  pre {
+    margin: 14px 0 0; padding: 16px 18px; overflow-x: auto;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; line-height: 1.7;
+  }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+  pre code { font-size: inherit; }
+  .comment { color: var(--muted); }
+
+  ul.plain { margin: 12px 0 0; padding-left: 20px; }
+  ul.plain li { margin-bottom: 7px; }
+
+  .note { padding: 16px 18px; border-radius: 14px; border: 1px solid var(--border); font-size: 14.5px; }
+  .note.caution { background: var(--caution-50); border-color: rgba(198, 124, 20, 0.4); }
+  .note h3 { font-size: 15px; margin-bottom: 8px; }
+  .note ul { margin: 0; padding-left: 20px; }
+  .note li { margin-bottom: 6px; }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px 9px 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 11.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  footer { margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--border); font-size: 13.5px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <span class="mark" aria-hidden="true">◎</span>
+    <div>
+      <h1>Mwhite SafeCircle</h1>
+      <p class="tagline">A consent-first community safety and activity PWA.</p>
+    </div>
+  </header>
+
+  <div class="lede">
+    <p><strong>The product principle.</strong> Mwhite SafeCircle is not designed to track people. It lets people
+    voluntarily create temporary safety activities and share their location selectively.</p>
+    <p>Three consequences run through the schema, the API authorisation, the UI and these documents: location
+    sharing is <strong>off by default</strong>; a precise coordinate is readable only by someone the owner has
+    <strong>authorised</strong>, while the activity is live; and precise location is <strong>temporary</strong>
+    — ending an activity deletes its points outright.</p>
+  </div>
+
+  <h2>Start here</h2>
+  <pre><code>npm install
+cp .env.example .env.local     <span class="comment"># add your Supabase URL + anon key</span>
+npx supabase link --project-ref &lt;ref&gt; &amp;&amp; npx supabase db push
+npm run dev</code></pre>
+  <p style="margin-top:12px;font-size:14px;color:var(--muted)">
+    Mapbox is optional — everything but the map works without a token. Full walkthrough in
+    <a href="DEPLOYMENT.md">DEPLOYMENT.md</a>.
+  </p>
+
+  <h2>How the system works</h2>
+
+  <figure>
+    <img src="diagrams/enforcement.svg" alt="Four stacked layers. The UI, the service layer and PostgREST sit above a dashed security boundary; PostgreSQL with Row Level Security sits below it. Deleting the three upper layers still leaves user data protected.">
+    <figcaption>Row Level Security is the boundary. Middleware, session checks and UI role checks exist for clean
+    redirects and useful errors — a bug in a component cannot become a data breach on its own.
+    <a href="ARCHITECTURE.md">ARCHITECTURE.md</a></figcaption>
+  </figure>
+
+  <figure>
+    <img src="diagrams/location-stores.svg" alt="A browser GPS reading enters one write guard, which forks into two stores: activity_locations holds precise expiring points readable only by authorised people, and activities.approx_location holds a grid-snapped point feeding aggregate map counts. No path connects the precise store to the map.">
+    <figcaption>Precise and coarse location live in different columns on different tables. The community map has no
+    code path to a person's position. <a href="LOCATION_MODEL.md">LOCATION_MODEL.md</a></figcaption>
+  </figure>
+
+  <figure>
+    <img src="diagrams/authorisation-gate.svg" alt="A decision chain. The owner is allowed immediately; a suspended account, a block in either direction and a finished activity each deny; visibility then decides. No branch reaches allow for an administrator.">
+    <figcaption>One predicate decides every precise read, and <code>is_admin</code> appears nowhere in it.
+    <a href="SECURITY.md">SECURITY.md</a></figcaption>
+  </figure>
+
+  <h2>Documentation</h2>
+  <div class="grid two">
+    <a class="card" href="ARCHITECTURE.md">
+      <h3>Architecture</h3>
+      <p>Layers, directory structure, the two request flows that matter, and a table of where each product rule is enforced.</p>
+      <span class="path">docs/ARCHITECTURE.md</span>
+    </a>
+    <a class="card" href="DATABASE.md">
+      <h3>Database</h3>
+      <p>Every table, column, index, constraint and trigger, with the reasoning behind each.</p>
+      <span class="path">docs/DATABASE.md</span>
+    </a>
+    <a class="card" href="SECURITY.md">
+      <h3>Security</h3>
+      <p>Threat model, RLS policies, admin boundaries, secret handling, and an honest limitations list.</p>
+      <span class="path">docs/SECURITY.md</span>
+    </a>
+    <a class="card" href="PRIVACY.md">
+      <h3>Privacy</h3>
+      <p>Data inventory, the seven-link consent chain, retention, and the user controls.</p>
+      <span class="path">docs/PRIVACY.md</span>
+    </a>
+    <a class="card" href="LOCATION_MODEL.md">
+      <h3>Location model</h3>
+      <p>The heart of the product: lifecycle, coarsening, k-anonymity, and the browser background limit.</p>
+      <span class="path">docs/LOCATION_MODEL.md</span>
+    </a>
+    <a class="card" href="DEPLOYMENT.md">
+      <h3>Deployment</h3>
+      <p>Supabase and Vercel setup, scheduled jobs, monitoring queries, incident response.</p>
+      <span class="path">docs/DEPLOYMENT.md</span>
+    </a>
+  </div>
+
+  <h2>Verifying the build</h2>
+  <pre><code>npm run verify      <span class="comment"># typecheck + lint + 208 tests</span>
+npm run test:db     <span class="comment"># 96 SQL security assertions (needs PostgreSQL + PostGIS)</span>
+npm run verify:all  <span class="comment"># both</span></code></pre>
+
+  <table>
+    <caption class="path" style="text-align:left;padding-bottom:6px">What the suites cover</caption>
+    <thead>
+      <tr><th scope="col">Suite</th><th scope="col">Count</th><th scope="col">What it proves</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>tests/db</code></td>
+        <td class="num">96</td>
+        <td>Runs the real migrations on PostgreSQL + PostGIS and asserts as an ordinary signed-in user that a stranger, a non-member, an expired share and an administrator all fail to read a precise coordinate.</td>
+      </tr>
+      <tr>
+        <td><code>tests/security</code></td>
+        <td class="num">102</td>
+        <td>Mounting the geolocation or push hook never prompts; no client component reaches a privileged module; the location policy has no admin escape hatch; no alert can carry a location.</td>
+      </tr>
+      <tr>
+        <td><code>tests/unit</code></td>
+        <td class="num">79</td>
+        <td>Validation, grid-snapping maths, error sanitisation, colour contrast, and the product's safety wording.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>What it does not do</h2>
+  <div class="note caution">
+    <h3>Stated plainly, because it is part of the product</h3>
+    <ul>
+      <li><strong>It does not contact emergency services.</strong> Emergency mode alerts the trusted contacts a
+      user configured. The database column recording it defaults to false and a client cannot set it true.</li>
+      <li><strong>It does not guarantee anyone's safety.</strong> It helps people share their plans with people
+      they trust.</li>
+      <li><strong>It does not track location in the background.</strong> Browsers throttle geolocation once a page
+      is hidden, so the app stops sending rather than showing a stale point as live.</li>
+      <li><strong>It does not send SMS or make calls.</strong> Contacts with an account get a push
+      alert; anyone else gets a link the user sends themselves.</li>
+      <li><strong>It has no user directory.</strong> There is deliberately no way to search for a person.</li>
+    </ul>
+  </div>
+
+  <h2>Before a public launch</h2>
+  <ul class="plain">
+    <li>An SMS provider, to reach trusted contacts who have no account. Web Push already covers those
+    who do.</li>
+    <li>Real icons. <code>public/icons/*</code> are generated placeholders (<code>npm run icons</code>).</li>
+    <li>A locale-aware emergency number; the dialog currently links <code>tel:112</code>.</li>
+    <li>A nonce-based CSP, edge rate limiting on sign-in, and an independent security review.</li>
+  </ul>
+  <p style="margin-top:12px;font-size:14px;color:var(--muted)">
+    The full list, with reasoning, is at the end of <a href="DEPLOYMENT.md">DEPLOYMENT.md</a>.
+  </p>
+
+  <footer>
+    <p>Mwhite SafeCircle does not replace emergency services. In an emergency, call your local emergency number.</p>
+    <p>This page is a static index — open it directly, or with the Live Preview extension in VS Code. The
+    Markdown documents it links render in VS Code and on GitHub.</p>
+  </footer>
+
+</div>
+</body>
+</html>

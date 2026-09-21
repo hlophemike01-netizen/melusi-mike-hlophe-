@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 700" width="1180" height="700" role="img" aria-labelledby="t d" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <title id="t">The two location stores</title>
+  <desc id="d">A browser GPS reading enters one write guard, which forks into two stores: activity_locations holds precise expiring points readable only by authorised people, and activities.approx_location holds a grid-snapped point feeding aggregate map counts. No path connects the precise store to the map.</desc>
+
+  <rect width="1180" height="700" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#24221f"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="48" font-size="24" font-weight="700" fill="#24221f">Two location stores, deliberately kept apart</text>
+  <text x="40" y="76" font-size="14" fill="#666159">The community map reads a different column on a different table. There is no code path from the map to a person's position.</text>
+
+  <g transform="translate(40, 100)">
+    <rect x="420" y="10" width="260" height="58" rx="10" fill="none" stroke="#24221f" stroke-width="1.5"/>
+    <text x="550" y="35" text-anchor="middle" font-size="15" font-weight="700" fill="#24221f">Browser geolocation</text>
+    <text x="550" y="56" text-anchor="middle" font-size="12.5" fill="#666159">lat, lng, accuracy — nothing else</text>
+
+    <line x1="550" y1="70" x2="550" y2="100" stroke="#24221f" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+    <rect x="330" y="104" width="440" height="80" rx="10" fill="#f7f7f6" stroke="#24221f" stroke-width="1.8"/>
+    <text x="550" y="130" text-anchor="middle" font-size="15" font-weight="700" fill="#24221f">tg_activity_locations_guard</text>
+    <text x="550" y="150" text-anchor="middle" font-size="12.5" fill="#666159">owner derived from the activity · expiry clamped server-side</text>
+    <text x="550" y="170" text-anchor="middle" font-size="12.5" fill="#666159">refuses if the activity is over or sharing is off</text>
+
+    <path d="M470 186 L470 214 L300 214 L300 244" stroke="#24221f" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+    <path d="M630 186 L630 214 L800 214 L800 244" stroke="#24221f" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+    <text x="292" y="232" text-anchor="end" font-size="12.5" font-weight="600" fill="#24221f">precise</text>
+    <text x="812" y="232" font-size="12.5" font-weight="600" fill="#1f7b78">coarsen_point() ~1.1km grid</text>
+
+    <rect x="60" y="248" width="480" height="150" rx="12" fill="#fdeceb" stroke="#c2352b" stroke-width="2"/>
+    <text x="300" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#a12a22">activity_locations</text>
+    <text x="300" y="302" text-anchor="middle" font-size="12.5" fill="#3d3a36">exact GPS · append-only · per-row expires_at</text>
+    <text x="300" y="324" text-anchor="middle" font-size="12.5" fill="#3d3a36">deleted the moment the activity ends</text>
+    <text x="300" y="352" text-anchor="middle" font-size="12.5" font-weight="700" fill="#a12a22">read only via can_view_activity_location()</text>
+    <text x="300" y="376" text-anchor="middle" font-size="12.5" fill="#3d3a36">owner · approved group member · live trusted share</text>
+
+    <rect x="620" y="248" width="420" height="150" rx="12" fill="#eefaf8" stroke="#1f7b78" stroke-width="2"/>
+    <text x="830" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#1c4e4e">activities.approx_location</text>
+    <text x="830" y="302" text-anchor="middle" font-size="12.5" fill="#1c4e4e">grid-snapped before it is ever stored</text>
+    <text x="830" y="324" text-anchor="middle" font-size="12.5" fill="#1c4e4e">written only when the owner opts in</text>
+    <text x="830" y="352" text-anchor="middle" font-size="12.5" fill="#1c4e4e">cleared when the activity ends</text>
+    <text x="830" y="376" text-anchor="middle" font-size="12.5" fill="#1c4e4e">stale after 30 minutes</text>
+
+    <line x1="300" y1="400" x2="300" y2="436" stroke="#24221f" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <line x1="830" y1="400" x2="830" y2="436" stroke="#24221f" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+    <rect x="110" y="440" width="380" height="62" rx="10" fill="none" stroke="#24221f" stroke-width="1.5"/>
+    <text x="300" y="466" text-anchor="middle" font-size="14" font-weight="700" fill="#24221f">ONE point, to one authorised person</text>
+    <text x="300" y="488" text-anchor="middle" font-size="12.5" fill="#666159">limit 1 — there is no history endpoint</text>
+
+    <rect x="660" y="440" width="340" height="62" rx="10" fill="none" stroke="#1f7b78" stroke-width="1.5"/>
+    <text x="830" y="466" text-anchor="middle" font-size="14" font-weight="700" fill="#1c4e4e">“14 runners nearby”</text>
+    <text x="830" y="488" text-anchor="middle" font-size="12.5" fill="#666159">counts per cell · cells under 3 suppressed</text>
+
+    <path d="M540 470 L648 470" stroke="#c2352b" stroke-width="2" stroke-dasharray="7 5" fill="none"/>
+    <g stroke="#c2352b" stroke-width="2.6">
+      <line x1="585" y1="455" x2="603" y2="485"/>
+      <line x1="603" y1="455" x2="585" y2="485"/>
+    </g>
+    <text x="594" y="518" text-anchor="middle" font-size="12.5" font-weight="700" fill="#a12a22">no path</text>
+
+    <text x="0" y="556" font-size="12.5" fill="#666159">Grid snapping, not random jitter: noise averages out over repeated samples, a grid does not. 200 nearby readings collapse to one cell.</text>
+  </g>
+</svg>
